@@ -1,0 +1,54 @@
+{
+  "Duomo": [
+    {
+      "id": 1,
+      "nome": "Duomo - CTO",
+      "vie": [
+        "Via Mengoni",
+        "L.go S. Margherita",
+        "Via S. Margherita",
+        "P.zza Scala",
+        "Via Manzoni",
+        "P.zza Cavour",
+        "Via Turati",
+        "L.go Donegani",
+        "P.zza Stati Uniti D’America",
+        "Via turati",
+        "P.zza Repubblica",
+        "SX Via Ferdinando di Savoia",
+        "P.zza S. Gioachino",
+        "Via Filzi (fino a Tonale)",
+        "Via Ponte Seveso (fino a Lunigiana)",
+        "Via Zuretti",
+        "SX Parravicini",
+        "DX Via Edolo",
+        "DX Melchiorre Gioia",
+        "Via De Marchi",
+        "P.zza Greco",
+        "Via De Marchi (Cimitero di Greco)",
+        "Via Venosta",
+        "DX Viale Sarca",
+        "DX Bignami"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Duomo - Fatebenefratelli",
+      "vie": [
+        "Via Mengoni",
+        "L.go S. Margherita",
+        "Via S. Margherita",
+        "P.zza Scala",
+        "Via Manzoni",
+        "Sx Pisoni",
+        "DX dei Giardini",
+        "Sx Fatebenefratelli",
+        "Dx C.so di Porta Nuova",
+        "P.zza S’ Angelo",
+        "Dx C.so di Porta Nuova",
+        "P.le Principessa Clotilde",
+        "Ospedale Fatebenefratelli"
+      ]
+    }
+  ]
+}
