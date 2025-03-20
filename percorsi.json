@@ -1,0 +1,162 @@
+{
+  "Aeroporti": [
+    {
+      "id": 1,
+      "nome": "Aeroporto Linate - Duomo",
+      "vie": [
+        "Viale Enrico Forlanini",
+        "Corso XXII Marzo",
+        "Corso di Porta Vittoria",
+        "Via Larga",
+        "Piazza del Duomo"
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Aeroporto Malpensa - Stazione Centrale",
+      "vie": [
+        "Strada Statale 336",
+        "Autostrada A8",
+        "Viale Certosa",
+        "Corso Sempione",
+        "Via Canova",
+        "Piazza della Repubblica",
+        "Stazione Centrale"
+      ]
+    }
+  ],
+  "Ospedali": [
+    {
+      "id": 3,
+      "nome": "Ospedale Niguarda - Piazza Fontana",
+      "vie": [
+        "Via Benefattori dell'Ospedale",
+        "Viale Ca' Granda",
+        "Via Giuditta Pasta",
+        "Via Galvani",
+        "Via Melchiorre Gioia",
+        "Via Pisani",
+        "Piazza Duca d'Aosta",
+        "Via Vitruvio",
+        "Via San Gregorio",
+        "Corso Venezia",
+        "Piazza San Babila",
+        "Corso Vittorio Emanuele II",
+        "Piazza Fontana"
+      ]
+    }
+  ],
+  "Piazze": [
+    {
+      "id": 4,
+      "nome": "Piazza Duomo - Piazzale Loreto",
+      "vie": [
+        "Piazza del Duomo",
+        "Via Mazzini",
+        "Corso Vittorio Emanuele II",
+        "Piazza San Babila",
+        "Corso Buenos Aires",
+        "Piazzale Loreto"
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Piazza San Babila - Stazione Garibaldi",
+      "vie": [
+        "Piazza San Babila",
+        "Corso Venezia",
+        "Via Fatebenefratelli",
+        "Via Moscova",
+        "Viale Crispi",
+        "Piazza XXV Aprile",
+        "Stazione Garibaldi"
+      ]
+    }
+  ],
+  "Cerchie": [
+    {
+      "id": 6,
+      "nome": "Cerchia dei Navigli - Castello Sforzesco",
+      "vie": [
+        "Via Molino delle Armi",
+        "Via De Amicis",
+        "Via Carducci",
+        "Via Olona",
+        "Via Leopardi",
+        "Via Boccaccio",
+        "Via Minghetti",
+        "Via Quintino Sella",
+        "Foro Buonaparte",
+        "Castello Sforzesco"
+      ]
+    }
+  ],
+  "Stazioni": [
+    {
+      "id": 7,
+      "nome": "Stazione Centrale - Duomo",
+      "vie": [
+        "Piazza Duca d'Aosta",
+        "Via Pisani",
+        "Piazza della Repubblica",
+        "Via Turati",
+        "Via Manzoni",
+        "Piazza della Scala",
+        "Via Mazzini",
+        "Piazza del Duomo"
+      ]
+    }
+  ],
+  "Autostrade": [
+    {
+      "id": 8,
+      "nome": "Autostrada A4 - San Siro",
+      "vie": [
+        "Autostrada A4",
+        "Viale Certosa",
+        "Piazzale Accursio",
+        "Via Achille",
+        "Via Monte Rosa",
+        "Via Tempesta",
+        "Via Patroclo",
+        "Via Piccolomini",
+        "Via Harar",
+        "Stadio San Siro"
+      ]
+    }
+  ],
+  "Duomo": [
+    {
+      "id": 9,
+      "nome": "Duomo - Piazza Cavour",
+      "vie": [
+        "Piazza del Duomo",
+        "Via Mazzini",
+        "Piazza della Scala",
+        "Via Verdi",
+        "Via dell'Orso",
+        "Via Cusani",
+        "Largo Cairoli",
+        "Via Foro Buonaparte",
+        "Via Manin",
+        "Piazza Cavour"
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Duomo - Stazione Centrale",
+      "vie": [
+        "Piazza del Duomo",
+        "Via Mazzini",
+        "Piazza San Babila",
+        "Corso Venezia",
+        "Via Palestro",
+        "Via Marina",
+        "Via Turati",
+        "Via Pisani",
+        "Piazza Duca d'Aosta",
+        "Stazione Centrale"
+      ]
+    }
+  ]
+}
