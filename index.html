@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Percorsi Milano - Visualizza i percorsi stradali di Milano">
+  <title>Percorsi Milano</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" />
+  
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS (puoi sostituirlo con il link alla versione di produzione) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  
+  <!-- React e ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel per JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+      min-height: 100vh;
+    }
+    #root {
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <!-- Script principale dell'app -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    
+    const PercorsiMilano = () => {
+      // Categorie di partenza
+      const categorie = [
+        'Aeroporti',
+        'Ospedali',
+        'Piazze',
+        'Cerchie',
+        'Stazioni',
+        'Autostrade',
+        'Duomo'
+      ];
+    
+      // Dati incorporati direttamente (invece di caricamento da file)
+      const datiPercorsi = {
+        "Aeroporti": [
+          {
+            "id": 1,
+            "nome": "Aeroporto Linate - Duomo",
+            "vie": [
+              "Viale Enrico Forlanini",
+              "Corso XXII Marzo",
+              "Corso di Porta Vittoria",
+              "Via Larga",
+              "Piazza del Duomo"
+            ]
+          },
+          {
+            "id": 2,
+            "nome": "Aeroporto Malpensa - Stazione Centrale",
+            "vie": [
+              "Strada Statale 336",
+              "Autostrada A8",
+              "Viale Certosa",
+              "Corso Sempione",
+              "Via Canova",
+              "Piazza della Repubblica",
+              "Stazione Centrale"
+            ]
+          }
+        ],
+        "Ospedali": [
+          {
+            "id": 3,
+            "nome": "Ospedale Niguarda - Piazza Fontana",
+            "vie": [
+              "Via Benefattori dell'Ospedale",
+              "Viale Ca' Granda",
+              "Via Giuditta Pasta",
+              "Via Galvani",
+              "Via Melchiorre Gioia",
+              "Via Pisani",
+              "Piazza Duca d'Aosta",
+              "Via Vitruvio",
+              "Via San Gregorio",
+              "Corso Venezia",
+              "Piazza San Babila",
+              "Corso Vittorio Emanuele II",
+              "Piazza Fontana"
+            ]
+          }
+        ],
+        "Piazze": [
+          {
+            "id": 4,
+            "nome": "Piazza Duomo - Piazzale Loreto",
+            "vie": [
+              "Piazza del Duomo",
+              "Via Mazzini",
+              "Corso Vittorio Emanuele II",
+              "Piazza San Babila",
+              "Corso Buenos Aires",
+              "Piazzale Loreto"
+            ]
+          },
+          {
+            "id": 5,
+            "nome": "Piazza San Babila - Stazione Garibaldi",
+            "vie": [
+              "Piazza San Babila",
+              "Corso Venezia",
+              "Via Fatebenefratelli",
+              "Via Moscova",
+              "Viale Crispi",
+              "Piazza XXV Aprile",
+              "Stazione Garibaldi"
+            ]
+          }
+        ],
+        "Cerchie": [
+          {
+            "id": 6,
+            "nome": "Cerchia dei Navigli - Castello Sforzesco",
+            "vie": [
+              "Via Molino delle Armi",
+              "Via De Amicis",
+              "Via Carducci",
+              "Via Olona",
+              "Via Leopardi",
+              "Via Boccaccio",
+              "Via Minghetti",
+              "Via Quintino Sella",
+              "Foro Buonaparte",
+              "Castello Sforzesco"
+            ]
+          }
+        ],
+        "Stazioni": [
+          {
+            "id": 7,
+            
+      
+      // Funzione per selezionare una categoria
+      const selezionaCategoria = (categoria) => {
+        setCategoriaSelezionata(categoria);
+        setStep('percorsi');
+      };
+    
+      // Funzione per selezionare un percorso
+      const selezionaPercorso = (percorso) => {
+        setPercorsoSelezionato(percorso);
+        setViaCorrente(0);
+        setStep('vie');
+      };
+    
+      // Funzione per visualizzare la via successiva
+      const mostraViaSuccessiva = () => {
+        if (viaCorrente < percorsoSelezionato.vie.length - 1) {
+          setViaCorrente(viaCorrente + 1);
+        }
+      };
+    
+      // Funzione per visualizzare la via precedente
+      const mostraViaPrecedente = () => {
+        if (viaCorrente > 0) {
+          setViaCorrente(viaCorrente - 1);
+        }
+      };
+    
+      // Funzione per tornare al passo precedente
+      const tornaDietro = () => {
+        if (step === 'vie') {
+          setStep('percorsi');
+        } else if (step === 'percorsi') {
+          setStep('categorie');
+          setCategoriaSelezionata(null);
+        } else if (step === 'ricerca') {
+          setStep('categorie');
+          setTestoRicerca('');
+        }
+      };
+      
+      // Funzione per cercare percorsi
+      const cercaPercorsi = () => {
+        if (!testoRicerca.trim()) return [];
+        
+        const risultati = [];
+        const query = testoRicerca.toLowerCase();
+        
+        Object.keys(percorsiDB).forEach(categoria => {
+          percorsiDB[categoria].forEach(percorso => {
+            // Cerca nella partenza e destinazione
+            if (percorso.nome.toLowerCase().includes(query)) {
+              risultati.push({...percorso, categoria});
+              return;
+            }
+            
+            // Cerca nelle vie
+            const trovatoInVie = percorso.vie.some(via => 
+              via.toLowerCase().includes(query)
+            );
+            
+            if (trovatoInVie) {
+              risultati.push({...percorso, categoria});
+            }
+          });
+        });
+        
+        return risultati;
+      };
+      
+      // Funzione per contare i percorsi totali
+      const contaPercorsiTotali = () => {
+        if (!percorsiDB || Object.keys(percorsiDB).length === 0) return 0;
+        
+        let totale = 0;
+        Object.values(percorsiDB).forEach(percorsiCategoria => {
+          totale += percorsiCategoria.length;
+        });
+        
+        return totale;
+      };
+    
+      return (
+        <div className="flex flex-col min-h-screen bg-gray-100">
+          <header className="bg-blue-600 text-white p-4 shadow-md">
+            <div className="container mx-auto flex justify-between items-center">
+              <div className="flex items-center space-x-4">
+                <h1 className="text-2xl font-bold">Percorsi Milano</h1>
+                {!caricamento && !erroreCaricamento && step !== 'categorie' && (
+                  <button 
+                    onClick={() => {
+                      setStep('categorie');
+                      setCategoriaSelezionata(null);
+                      setPercorsoSelezionato(null);
+                    }}
+                    className="bg-blue-500 hover:bg-blue-400 text-white px-3 py-1 rounded-lg border border-white"
+                  >
+                    <span className="flex items-center">
+                      🏠 Home
+                    </span>
+                  </button>
+                )}
+              </div>
+              {!caricamento && !erroreCaricamento && (
+                <button 
+                  onClick={() => setStep('ricerca')}
+                  className="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 font-medium"
+                >
+                  <span className="flex items-center">
+                    🔍 Cerca
+                  </span>
+                </button>
+              )}
+            </div>
+          </header>
+          
+          <main className="flex flex-col flex-grow p-4 md:p-6">
+            {/* Schermata di caricamento */}
+            {caricamento && (
+              <div className="flex-grow flex flex-col items-center justify-center">
+                <div className="text-xl font-semibold text-gray-700 mb-4">Caricamento percorsi...</div>
+                <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+            
+            {/* Errore di caricamento */}
+            {erroreCaricamento && (
+              <div className="flex-grow flex flex-col items-center justify-center">
+                <div className="text-xl font-semibold text-red-600 mb-2">Errore durante il caricamento</div>
+                <div className="text-gray-600 mb-4">{erroreCaricamento}</div>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Riprova
+                </button>
+              </div>
+            )}
+            
+            {!caricamento && !erroreCaricamento && (
+              <>
+                {/* Schermata di ricerca */}
+                {step === 'ricerca' && (
+                  <div className="bg-white rounded-lg shadow-md p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <button
+                        onClick={tornaDietro}
+                        className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-sm"
+                      >
+                        ← Indietro
+                      </button>
+                      <h2 className="text-xl font-bold text-center">Ricerca Percorsi</h2>
+                      <div className="w-14"></div>
+                    </div>
+                    
+                    <div className="mt-4 mb-6">
+                      <div className="flex">
+                        <input
+                          type="text"
+                          value={testoRicerca}
+                          onChange={(e) => setTestoRicerca(e.target.value)}
+                          placeholder="Cerca percorsi o vie..."
+                          className="flex-grow p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        />
+                        <button 
+                          className="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700"
+                          onClick={() => setTestoRicerca(testoRicerca)}
+                        >
+                          Cerca
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6">
+                      <h3 className="text-lg font-semibold mb-3">Risultati della ricerca:</h3>
+                      <div className="space-y-4">
+                        {cercaPercorsi().length > 0 ? (
+                          cercaPercorsi().map((percorso) => (
+                            <button
+                              key={percorso.id}
+                              onClick={() => {
+                                setPercorsoSelezionato(percorso);
+                                setViaCorrente(0);
+                                setStep('vie');
+                              }}
+                              className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-lg text-left border border-gray-200 transition-colors"
+                            >
+                              <span className="text-lg font-medium">{percorso.nome}</span>
+                              <div className="text-sm text-gray-500 mt-1">
+                                Categoria: {percorso.categoria} • {percorso.vie.length} vie
+                              </div>
+                            </button>
+                          ))
+                        ) : (
+                          testoRicerca.trim() ? (
+                            <div className="text-center text-gray-500 py-8">
+                              Nessun risultato trovato per "{testoRicerca}"
+                            </div>
+                          ) : (
+                            <div className="text-center text-gray-500 py-8">
+                              Inserisci una parola chiave per cercare
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Schermata di selezione categoria */}
+                {step === 'categorie' && (
+                  <div className="bg-white rounded-lg shadow-md p-6">
+                    <h2 className="text-xl font-bold mb-4 text-center">Seleziona la categoria di partenza</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                      {categorie.map((categoria) => (
+                        <button
+                          key={categoria}
+                          onClick={() => selezionaCategoria(categoria)}
+                          className="bg-blue-100 hover:bg-blue-200 p-6 rounded-lg flex flex-col items-center justify-center transition-colors text-center"
+                        >
+                          <span className="text-lg font-semibold text-blue-800">{categoria}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+        
+                {/* Schermata di selezione percorso */}
+                {step === 'percorsi' && categoriaSelezionata && (
+                  <div className="bg-white rounded-lg shadow-md p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <button
+                        onClick={tornaDietro}
+                        className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-sm"
+                      >
+                        ← Indietro
+                      </button>
+                      <h2 className="text-xl font-bold text-center">Percorsi da {categoriaSelezionata}</h2>
+                      <div className="w-14"></div> {/* Spazio vuoto per allineare il titolo */}
+                    </div>
+                    
+                    <div className="space-y-4 mt-6">
+                      {percorsiDB[categoriaSelezionata]?.map((percorso) => (
+                        <button
+                          key={percorso.id}
+                          onClick={() => selezionaPercorso(percorso)}
+                          className="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-lg text-left border border-gray-200 transition-colors"
+                        >
+                          <span className="text-lg font-medium">{percorso.nome}</span>
+                          <div className="text-sm text-gray-500 mt-1">
+                            {percorso.vie.length} vie nel percorso
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+        
+                {/* Schermata di visualizzazione vie */}
+                {step === 'vie' && percorsoSelezionato && (
+                  <div className="bg-white rounded-lg shadow-md p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <button
+                        onClick={tornaDietro}
+                        className="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-sm"
+                      >
+                        ← Indietro
+                      </button>
+                      <h2 className="text-lg font-bold text-center">{percorsoSelezionato.nome}</h2>
+                      <div className="w-14 text-sm text-gray-500 text-right">
+                        {viaCorrente + 1}/{percorsoSelezionato.vie.length}
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col items-center justify-center bg-gray-50 rounded-lg p-8 my-6 min-h-64">
+                      <div className="text-sm text-gray-500 mb-1">
+                        Tappa {viaCorrente + 1}:
+                      </div>
+                      <div className="text-2xl font-bold text-center">
+                        {percorsoSelezionato.vie[viaCorrente]}
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between mt-6">
+                      <button
+                        onClick={mostraViaPrecedente}
+                        className={`px-4 py-2 rounded ${
+                          viaCorrente > 0
+                            ? 'bg-gray-200 hover:bg-gray-300'
+                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        }`}
+                        disabled={viaCorrente === 0}
+                      >
+                        ← Precedente
+                      </button>
+                      
+                      <div className="text-sm text-gray-500 self-center">
+                        {viaCorrente + 1} di {percorsoSelezionato.vie.length}
+                      </div>
+                      
+                      <button
+                        onClick={mostraViaSuccessiva}
+                        className={`px-4 py-2 rounded ${
+                          viaCorrente < percorsoSelezionato.vie.length - 1
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                            : 'bg-blue-300 text-white cursor-not-allowed'
+                        }`}
+                        disabled={viaCorrente === percorsoSelezionato.vie.length - 1}
+                      >
+                        Successiva →
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </main>
+          
+          <footer className="bg-gray-200 p-4 text-center text-gray-600 text-sm">
+            © 2025 Percorsi Milano - {!caricamento && !erroreCaricamento && `${contaPercorsiTotali()} percorsi disponibili`}
+          </footer>
+        </div>
+      );
+    };
+    
+    // Rendering dell'app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<PercorsiMilano />);
+  </script>
+</body>
+</html>
