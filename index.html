@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Percorsi TAM - Visualizza i percorsi stradali per tassisti">
+  <title>Percorsi TAM</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" />
+  
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React e ReactDOM -->
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone@7.21.4/babel.min.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+      min-height: 100vh;
+    }
+    #root {
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="login-container" class="flex flex-col min-h-screen bg-gray-100">
+    <header class="bg-blue-600 text-white p-3 shadow-md">
+      <div class="container mx-auto flex justify-center items-center">
+        <div class="flex items-center">
+          <img src="tam-logo.png" alt="TAM Logo" class="h-8 mr-2" />
+          <span class="text-lg font-bold">Tassisti Artigiani Milanesi</span>
+        </div>
+      </div>
+    </header>
+    
+    <main class="flex-grow flex items-center justify-center p-4">
+      <div class="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+        <h2 class="text-2xl font-bold text-center text-blue-800 mb-6">Accesso Riservato</h2>
+        
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+            Password
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="password"
+            type="password"
+            placeholder="Inserisci la password"
+          />
+        </div>
+        
+        <div id="error-message" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 hidden" role="alert">
+          <p>Password non corretta. Riprova.</p>
+        </div>
+        
+        <div class="flex items-center justify-center">
+          <button
+            id="login-button"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+          >
+            Accedi
+          </button>
+        </div>
+      </div>
+    </main>
+    
+    <footer class="bg-gray-200 p-4 text-center text-gray-600 text-sm">
+      App Created by Alessandro Commisso & Riccardo Battaglia
+    </footer>
+  </div>
+
+  <div id="root" class="hidden"></div>
+  
+  <script>
+    // Sistema di autenticazione semplice
+    const passwordCorretta = "tam2025";
+    const loginButton = document.getElementById('login-button');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('error-message');
+    const loginContainer = document.getElementById('login-container');
+    const appRoot = document.getElementById('root');
+    
+    // Controlla se già autenticato
+    if (localStorage.getItem('autenticato') === 'true') {
+      loginContainer.classList.add('hidden');
+      appRoot.classList.remove('hidden');
+    }
+    
+    // Gestione login
+    loginButton.addEventListener('click', verificaPassword);
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        verificaPassword();
+      }
+    });
+    
+    function verificaPassword() {
+      if (passwordInput.value === passwordCorretta) {
+        localStorage.setItem('autenticato', 'true');
+        loginContainer.classList.add('hidden');
+        appRoot.classList.remove('hidden');
+        errorMessage.classList.add('hidden');
+      } else {
+        errorMessage.classList.remove('hidden');
+      }
+    }
+  </script>
+  
+  <!-- Script principale dell'app -->
+  <script type="text/babel">
+    function App() {
+      // Categorie di partenza
+      const categorie = [
+        'Aeroporti',
+        'Ospedali',
+        'Piazze',
+        'Cerchie',
+        'Stazioni',
+        'Autostrade',
+        'Duomo'
+      ];
+    
+      // Stati dell'applicazione
+      const [percorsiDB, setPrecorsiDB] = React.useState({});
+      const [caricamento, setCaricamento] = React.useState(true);
+      const [erroreCaricamento, setErroreCaricamento] = React.useState(null);
+      const [step, setStep] = React.useState('categorie');
+      const [categoriaSelezionata, setCategoriaSelezionata] = React.useState(null);
+      const [percorsoSelezionato, setPercorsoSelezionato] = React.useState(null);
+      const [viaCorrente, setViaCorrente] = React.useState(0);
+      const [testoRicerca, setTestoRicerca] = React.useState('');
+      
+      // Effetto per caricare i dati dal file JSON all'avvio dell'app
+      React.useEffect(() => {
+        // Funzione per caricare i dati
+        async function caricaDati() {
+          try {
+            setCaricamento(true);
+            
+            // Carica il file JSON dalla stessa cartella dell'index.html
+            const risposta = await fetch('percorsi.json');
+            
+            // Controlla se la richiesta ha avuto successo
+            if (!risposta.ok) {
+              throw new Error(`Errore di rete: ${risposta.status}`);
+            }
+            
+            // Converte la risposta in JSON
+            const dati = await risposta.json();
+            
+            // Salva i dati nello stato
+            setPrecorsiDB(dati);
+            setCaricamento(false);
+          } catch (errore) {
+            console.error('Errore durante il caricamento dei percorsi:', errore);
+            setErroreCaricamento(errore.message);
+            setCaricamento(false);
+          }
+        }
+        
+        // Chiama la funzione di caricamento
+        caricaDati();
+      }, []);
+      
+      // Logout function
+      const logout = () => {
+        localStorage.removeItem('autenticato');
+        window.location.reload();
+      };
+      
+      // Funzione per selezionare una categoria
+      const selezionaCategoria = (categoria) => {
+        setCategoriaSelezionata(categoria);
+        setStep('percorsi');
+      };
+    
+      // Funzione per selezionare un percorso
+      const selezionaPercorso = (percorso) => {
+        setPercorsoSelezionato(percorso);
+        setViaCorrente(0);
+        setStep('vie');
+      };
+    
+      // Funzione per visualizzare la via successiva
+      const mostraViaSuccessiva = () => {
+        if (viaCorrente < percorsoSelezionato.vie.length - 1) {
+          setViaCorrente(viaCorrente + 1);
+        }
+      };
+    
+      // Funzione per visualizzare la via precedente
+      const mostraViaPrecedente = () => {
+        if (viaCorrente > 0) {
+          setViaCorrente(viaCorrente - 1);
+        }
+      };
+    
+      // Funzione per tornare al passo precedente
+      const tornaDietro = () => {
+        if (step === 'vie' || step === 'percorsoCompleto') {
+          setStep('percorsi');
+        } else if (step === 'percorsi') {
+          setStep('categorie');
+          setCategoriaSelezionata(null);
+        } else if (step === 'ricerca') {
+          setStep('categorie');
+          setTestoRicerca('');
+        }
+      };
+      
+      // Funzione per cercare percorsi
+      const cercaPercorsi = () => {
+        if (!testoRicerca.trim()) return [];
+        
+        const risultati = [];
+        const query = testoRicerca.toLowerCase();
+        
+        Object.keys(percorsiDB).forEach(categoria => {
+          percorsiDB[categoria].forEach(percorso => {
+            // Cerca nella partenza e destinazione
+            if (percorso.nome.toLowerCase().includes(query)) {
+              risultati.push({...percorso, categoria});
+              return;
+            }
+            
+            // Cerca nelle vie
+            const trovatoInVie = percorso.vie.some(via => 
+              via.toLowerCase().includes(query)
+            );
+            
+            if (trovatoInVie) {
+              risultati.push({...percorso, categoria});
+            }
+          });
+        });
+        
+        return risultati;
+      };
+      
+      // Funzione per contare i percorsi totali
+      const contaPercorsiTotali = () => {
+        if (!percorsiDB || Object.keys(percorsiDB).length === 0) return 0;
+        
+        let totale = 0;
+        Object.values(percorsiDB).forEach(percorsiCategoria => {
+          totale += percorsiCategoria.length;
+        });
+        
+        return totale;
+      };
+    
+      return (
+        <div className="flex flex-col min-h-screen bg-gray-100">
+          <header className="bg-blue-600 text-white p-3 shadow-md">
+            <div className="container mx-auto flex justify-between items-center">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <img src="tam-logo.png" alt="TAM Logo" className="h-8 mr-2" />
+                  <span className="text-lg font-bold">Tassisti Artigiani Milanesi</span>
+                </div>
+                {!caricamento && !erroreCaricamento && step !== 'categorie' && (
+                  <button 
+                    onClick={() => {
+                      setStep('categorie');
+                      setCategoriaSelezionata(null);
+                      setPercorsoSelezionato(null);
+                    }}
+                    className="bg-blue-500 hover:bg-blue-400 text-white px-2 py-1 rounded border border-white text-sm"
+                  >
+                    <span className="flex items-center">
+                      🏠 Home
+                    </span>
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center">
+                {!caricamento && !erroreCaricamento && (
+                  <button 
+                    onClick={() => { setStep('ricerca'); }}
+                    className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-50 font-medium text-sm mr-2"
+                  >
+                    <span className="flex items-center">
+                      🔍 Cerca
+                    </span>
+                  </button>
+                )}
+                <button 
+                  onClick={logout}
+                  className="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 text-sm"
+                >
+                  Esci
+                </button>
+              </div>
+            </div>
+          </header>
+          
+          <main className="flex flex-col flex-grow p-4 md:p-6">
+            {/* Resto dell'app... */}
+          </main>
+          
+          <footer className="bg-gray-200 p-4 text-center text-gray-600 text-sm">
+            App Created by Alessandro Commisso & Riccardo Battaglia - {!caricamento && !erroreCaricamento && `${contaPercorsiTotali()} percorsi disponibili`}
+          </footer>
+        </div>
+      );
+    }
+    
+    // Rendering dell'app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
