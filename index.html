@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Percorsi TAM</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .hidden { display: none; }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <!-- Login Container -->
+  <div id="login-container" class="min-h-screen flex flex-col">
+    <header class="bg-blue-600 text-white p-3 shadow-md">
+      <div class="container mx-auto flex justify-center">
+        <div class="flex items-center">
+          <img src="tam-logo.png" alt="TAM Logo" class="h-8 mr-2">
+          <h1 class="text-lg font-bold">Tassisti Artigiani Milanesi</h1>
+        </div>
+      </div>
+    </header>
+    
+    <main class="flex-grow flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center text-blue-800 mb-6">Accesso Riservato</h2>
+        
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
+          <input id="password-input" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3" placeholder="Inserisci la password">
+        </div>
+        
+        <div id="error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+          <p>Password non corretta. Riprova.</p>
+        </div>
+        
+        <div class="flex items-center justify-center">
+          <button id="login-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none">
+            Accedi
+          </button>
+        </div>
+      </div>
+    </main>
+    
+    <footer class="bg-gray-200 p-4 text-center text-gray-600 text-sm">
+      App Created by Alessandro Commisso & Riccardo Battaglia
+    </footer>
+  </div>
+
+  <!-- Main App Container (hidden by default) -->
+  <div id="app-container" class="hidden">
+    <!-- Your existing app HTML goes here -->
+    <iframe id="app-iframe" src="app.html" style="width:100%; height:100vh; border:none;"></iframe>
+  </div>
+
+  <script>
+    // Login functionality
+    const loginContainer = document.getElementById('login-container');
+    const appContainer = document.getElementById('app-container');
+    const passwordInput = document.getElementById('password-input');
+    const loginButton = document.getElementById('login-button');
+    const errorMessage = document.getElementById('error-message');
+    
+    // Correct password
+    const correctPassword = "tam2025";
+    
+    // Check if already logged in
+    if (localStorage.getItem('tamLoggedIn') === 'true') {
+      loginContainer.classList.add('hidden');
+      appContainer.classList.remove('hidden');
+    }
+    
+    // Login button click
+    loginButton.addEventListener('click', checkPassword);
+    
+    // Enter key press
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+    
+    // Password verification
+    function checkPassword() {
+      if (passwordInput.value === correctPassword) {
+        // Store login state
+        localStorage.setItem('tamLoggedIn', 'true');
+        
+        // Hide login, show app
+        loginContainer.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+        
+        // Hide error if visible
+        errorMessage.classList.add('hidden');
+      } else {
+        // Show error message
+        errorMessage.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>

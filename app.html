@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Percorsi TAM - Visualizza i percorsi stradali per tassisti">
+  <title>Percorsi TAM</title>
+  
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+      min-height: 100vh;
+    }
+    
+    .min-h-screen {
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div class="flex flex-col min-h-screen bg-gray-100">
+    <header class="bg-blue-600 text-white p-3 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center">
+            <img src="tam-logo.png" alt="TAM Logo" class="h-8 mr-2" />
+            <span class="text-lg font-bold">Tassisti Artigiani Milanesi</span>
+          </div>
+          <button 
+            id="home-button"
+            class="hidden bg-blue-500 hover:bg-blue-400 text-white px-2 py-1 rounded border border-white text-sm"
+          >
+            <span class="flex items-center">
+              🏠 Home
+            </span>
+          </button>
+        </div>
+        <div class="flex items-center">
+          <button 
+            id="search-button"
+            class="bg-white text-blue-600 px-3 py-1 rounded hover:bg-blue-50 font-medium text-sm mr-2"
+          >
+            <span class="flex items-center">
+              🔍 Cerca
+            </span>
+          </button>
+          <button 
+            id="logout-button"
+            class="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 text-sm"
+          >
+            Esci
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <main id="app-content" class="flex flex-col flex-grow p-4 md:p-6">
+      <!-- Contenuto app caricato dinamicamente -->
+      <div id="loading" class="flex-grow flex flex-col items-center justify-center">
+        <div class="text-xl font-semibold text-gray-700 mb-4">Caricamento percorsi...</div>
+        <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    </main>
+    
+    <footer class="bg-gray-200 p-4 text-center text-gray-600 text-sm">
+      App Created by Alessandro Commisso & Riccardo Battaglia - <span id="percorsi-count">0 percorsi disponibili</span>
+    </footer>
+  </div>
+
+  <script>
+    // Gestione logout
+    document.getElementById('logout-button').addEventListener('click', function() {
+      localStorage.removeItem('tamLoggedIn');
+      window.parent.location.reload();
+    });
+    
+    // Carica il file percorsi.json e mostra le categorie
+    fetch('percorsi.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Errore nel caricamento dei dati');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Mostra le categorie
+        showCategories(data);
+        
+        // Conta i percorsi
+        let totalPaths = 0;
+        Object.values(data).forEach(category => {
+          totalPaths += category.length;
+        });
+        
+        // Aggiorna il contatore
+        document.getElementById('percorsi-count').textContent = `${totalPaths} percorsi disponibili`;
+      })
+      .catch(error => {
+        document.getElementById('app-content').innerHTML = `
+          <div class="flex-grow flex flex-col items-center justify-center">
+            <div class="text-xl font-semibold text-red-600 mb-2">Errore durante il caricamento</div>
+            <div class="text-gray-600 mb-4">${error.message}</div>
+            <button 
+              onclick="window.location.reload()"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Riprova
+            </button>
+          </div>
+        `;
+      });
+    
+    // Funzione per visualizzare le categorie
+    function showCategories(data) {
+      const categories = [
+        'Aeroporti',
+        'Ospedali',
+        'Piazze',
+        'Cerchie',
+        'Stazioni',
+        'Autostrade',
+        'Duomo'
+      ];
+      
+      let html = `
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold mb-4 text-center">Seleziona la categoria di partenza</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      `;
+      
+      categories.forEach(category => {
+        html += `
+          <button 
+            onclick="showPaths('${category}', ${JSON.stringify(data[category] || []).replace(/"/g, '&quot;')})"
+            class="bg-blue-100 hover:bg-blue-200 p-6 rounded-lg flex flex-col items-center justify-center transition-colors text-center"
+          >
+            <span class="text-lg font-semibold text-blue-800">${category}</span>
+          </button>
+        `;
+      });
+      
+      html += `
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('app-content').innerHTML = html;
+      document.getElementById('home-button').classList.add('hidden');
+    }
+    
+    // Funzione per visualizzare i percorsi di una categoria
+    function showPaths(category, paths) {
+      document.getElementById('home-button').classList.remove('hidden');
+      document.getElementById('home-button').onclick = function() {
+        showCategories(window.pathsData);
+      };
+      
+      let html = `
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex justify-between items-center mb-4">
+            <button
+              onclick="showCategories(window.pathsData)"
+              class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-sm"
+            >
+              ← Indietro
+            </button>
+            <h2 class="text-xl font-bold text-center">Percorsi da ${category}</h2>
+            <div class="w-14"></div>
+          </div>
+          
+          <div class="space-y-4 mt-6">
+      `;
+      
+      if (paths && paths.length > 0) {
+        paths.forEach(path => {
+          html += `
+            <button
+              onclick="showPath(${JSON.stringify(path).replace(/"/g, '&quot;')}, '${category}')"
+              class="w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-lg text-left border border-gray-200 transition-colors"
+            >
+              <span class="text-lg font-medium">${path.nome}</span>
+              <div class="text-sm text-gray-500 mt-1">
+                ${path.vie.length} vie nel percorso
+              </div>
+            </button>
+          `;
+        });
+      } else {
+        html += `
+          <div class="text-center text-gray-500 py-8">
+            Nessun percorso disponibile per questa categoria.
+          </div>
+        `;
+      }
+      
+      html += `
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('app-content').innerHTML = html;
+    }
+    
+    // Visualizzazione singola via
+    function showPath(path, category, stepIndex = 0) {
+      document.getElementById('home-button').classList.remove('hidden');
+      
+      let html = `
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="mb-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-blue-800 mb-8">${path.nome}</h2>
+            <div class="flex justify-between items-center">
+              <button
+                onclick="showPaths('${category}', window.pathsData['${category}'])"
+                class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded-lg text-gray-700 flex items-center text-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Indietro
+              </button>
+              <button
+                onclick="showFullPath(${JSON.stringify(path).replace(/"/g, '&quot;')}, '${category}')"
+                class="bg-green-100 hover:bg-green-200 px-3 py-1 rounded-lg text-green-700 flex items-center text-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+                Vedi tutto
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex flex-col items-center justify-center bg-gray-50 rounded-lg p-8 my-6 min-h-64 border-2 border-blue-100 shadow-inner">
+            <div class="text-sm text-blue-600 font-medium mb-2 bg-blue-50 px-3 py-1 rounded-full">
+              Tappa ${stepIndex + 1} di ${path.vie.length}
+            </div>
+            <div class="text-3xl font-bold text-center text-gray-800 mb-2">
+              ${path.vie[stepIndex]}
+            </div>
+            <div class="w-16 h-1 bg-blue-200 rounded-full my-3"></div>
+            <div class="text-sm text-gray-500 italic text-center">
+              ${stepIndex > 0 ? 
+                `Provenienza: ${path.vie[stepIndex-1]}` : 
+                `Inizio percorso: ${path.nome.split(' - ')[0]}`}
+            </div>
+          </div>
+          
+          <div class="flex justify-between mt-6">
+            <button
+              onclick="${stepIndex > 0 ? `showPath(${JSON.stringify(path).replace(/"/g, '&quot;')}, '${category}', ${stepIndex - 1})` : ''}"
+              class="w-32 px-4 py-3 rounded-lg flex items-center justify-center ${
+                stepIndex > 0
+                  ? 'bg-blue-100 hover:bg-blue-200 text-blue-800'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }"
+              ${stepIndex === 0 ? 'disabled' : ''}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Precedente
+            </button>
+            
+            <div class="bg-blue-50 py-1 px-3 rounded-full text-sm font-medium text-blue-700">
+              ${stepIndex + 1} / ${path.vie.length}
+            </div>
+            
+            <button
+              onclick="${stepIndex < path.vie.length - 1 ? `showPath(${JSON.stringify(path).replace(/"/g, '&quot;')}, '${category}', ${stepIndex + 1})` : ''}"
+              class="w-32 px-4 py-3 rounded-lg flex items-center justify-center ${
+                stepIndex < path.vie.length - 1
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                  : 'bg-blue-300 text-white cursor-not-allowed'
+              }"
+              ${stepIndex === path.vie.length - 1 ? 'disabled' : ''}
+            >
+              Successiva
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('app-content').innerHTML = html;
+    }
+    
+    // Visualizzazione percorso completo
+    function showFullPath(path, category) {
+      document.getElementById('home-button').classList.remove('hidden');
+      
+      let html = `
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="mb-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-blue-800 mb-8">${path.nome}</h2>
+            <div class="flex justify-between items-center">
+              <button
+                onclick="showPaths('${category}', window.pathsData['${category}'])"
+                class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded-lg text-gray-700 flex items-center text-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Indietro
+              </button>
+              <button
+                onclick="showPath(${JSON.stringify(path).replace(/"/g, '&quot;')}, '${category}', 0)"
+                class="bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-lg text-blue-700 flex items-center text-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Singola tappa
+              </button>
+            </div>
+          </div>
+          
+          <div class="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-100">
+            <h3 class="text-lg font-semibold text-blue-800 mb-2">Percorso completo - ${path.vie.length} tappe</h3>
+            <p class="text-sm text-blue-700 mb-1">Da: <span class="font-medium">${path.nome.split(' - ')[0]}</span></p>
+            <p class="text-sm text-blue-700">A: <span class="font-medium">${path.nome.split(' - ')[1]}</span></p>
+          </div>
+          
+          <ol class="relative border-l-2 border-blue-200 ml-4 space-y-6 mb-6">
+      `;
+      
+      path.vie.forEach((via, index) => {
+        html += `
+          <li class="ml-6">
+            <span class="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ${
+              index === 0 ? 'bg-green-500 text-white' : 
+              index === path.vie.length - 1 ? 'bg-red-500 text-white' : 
+              'bg-blue-100 text-blue-800'
+            }">
+              ${index === 0 ? 
+                '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>' : 
+                index === path.vie.length - 1 ? 
+                '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>' : 
+                index + 1
+              }
+            </span>
+            <div class="bg-white p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow">
+              <h4 class="text-lg font-medium text-gray-900">${via}</h4>
+              <p class="text-sm text-gray-500 mt-1">
+                Tappa ${index + 1} di ${path.vie.length}
+              </p>
+            </div>
+          </li>
+        `;
+      });
+      
+      html += `
+          </ol>
+          
+          <div class="flex justify-center mt-8 mb-4">
+            <button
+              onclick="showPath(${JSON.stringify(path).replace(/"/g, '&quot;')}, '${category}', 0)"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              Navigazione tappa per tappa
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('app-content').innerHTML = html;
+    }
+  </script>
+  
+  <script>
+    // Questa variabile globale salverà i dati per evitare di ricaricarli continuamente
+    window.pathsData = {};
+    
+    // Carica i dati dei percorsi
+    fetch('percorsi.json')
+      .then(response => response.json())
+      .then(data => {
+        window.pathsData = data;
+      })
+      .catch(error => console.error('Errore caricamento dati:', error));
+  </script>
+</body>
+</html>
