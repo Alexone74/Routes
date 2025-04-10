@@ -5,7 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Percorsi Milano - Visualizza i percorsi stradali di Milano">
   <title>Percorsi Milano</title>
+  <script>
   
+  // Script di protezione con password
+  window.onload = function() {
+    // Controlla se l'utente è già autenticato
+    if (!sessionStorage.getItem('authenticated')) {
+      // Chiedi la password
+      var password = prompt('Inserisci la password per accedere:');
+      if (password !== 'Tam12345!') {
+        alert('Password errata!');
+        // Nascondi tutto il contenuto
+        document.body.innerHTML = '<h1 style="text-align: center; margin-top: 100px; font-family: sans-serif;">Accesso negato</h1>';
+        // Impedisci l'accesso
+        return;
+      } else {
+        // Salva lo stato di autenticazione per la sessione
+        sessionStorage.setItem('authenticated', 'true');
+      }
+    }
+  };
+</script>
+
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" />
   
@@ -542,7 +563,7 @@
           </main>
           
           <footer className="bg-gray-200 p-4 text-center text-gray-600 text-sm">
-            App Created by Alessandro Commisso & Riccardo Battaglia - {!caricamento && !erroreCaricamento && `${contaPercorsiTotali()} percorsi disponibili`}
+            App Created by Alessandro Commisso & Riccardo Battaglia with OsmAnd Maps - {!caricamento && !erroreCaricamento && `${contaPercorsiTotali()} percorsi disponibili`}
           </footer>
         </div>
       );
