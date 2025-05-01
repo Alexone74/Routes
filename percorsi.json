@@ -2029,7 +2029,8 @@
         "Indicazioni per Galeazzi",
         "Via Cristina Belgioioso",
         "GALEAZZI"
-      ]
+      ],
+      "immagine": "Piazze/24 Maggio - Galeazzi.jpg"
     },
     {
       "id": 63,
@@ -2076,7 +2077,8 @@
         "Ferno",
         "Casorate Sempione e sono al Terminal 2",
         "Somma Lombarda e sono al Terminal 1"
-      ]
+      ],
+      "immagine": "Piazze/24 Maggio - Malpensa.jpg"
     },
     {
       "id": 64,
@@ -2134,7 +2136,8 @@
         "Piazza Wagner",
         "Via Buonarroti",
         "Piazza Buonarroti"
-      ]
+      ],
+      "immagine": "Piazze/24 Maggio - P.za Buonarroti.jpg"
     },
     {
       "id": 66,
@@ -2164,7 +2167,8 @@
         "Dopo la A4 Torino/Venezia",
         "Esco Uscita Rho Fiera",
         "Seguo uscita Porta EST"
-      ]
+      ],
+      "immagine": "Piazze/24 Maggio - Rho.jpg"
     },
     {
       "id": 67,
@@ -2186,7 +2190,8 @@
         "Via S. Damiano",
         "Via Visconti di Modrone",
         "Sx Via Mascagni"
-      ]
+      ],
+      "immagine": "Piazze/5 Alpini - Mascagni.jpg"
     },
     {
       "id": 68,
@@ -2342,7 +2347,8 @@
         "Piazza Principessa Clotilde",
         "Sx Via Montegrappa",
         "Dx Rosales"
-      ]
+      ],
+      "immagine": "Piazze/Abbiategrasso - Garibaldi.jpg"
     },
     {
       "id": 72,
@@ -2370,7 +2376,8 @@
         "Piazza Principessa Clotilde",
         "SX Montegrappa",
         "Dx Rosales"
-      ]
+      ],
+      "immagine": "Piazze/Abbiategrasso - Garibaldi ver 2.jpg"
     },
     {
       "id": 74,
@@ -2403,7 +2410,8 @@
         "Piazza Artigianato",
         "Viale Forlanini",
         "LINATE"
-      ]
+      ],
+      "immagine": "Piazze/Abbiategrasso - Linate.jpg"
     },
     {
       "id": 75,
