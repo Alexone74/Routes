@@ -1127,7 +1127,8 @@
         "Sx Via Mercalli",
         "Piazza Andrea Ferrari",
         "Via Gaetano Pini"
-      ]
+      ],
+      "immagine": "Duomo/Duomo - Gaetano Pini.jpg"
     },
     {
       "id": 32,
@@ -1154,7 +1155,8 @@
         "Via Scarampo",
         "Via De Gasperi",
         "Cavalcavia del Ghisallo"
-      ]
+      ],
+      "immagine": "Duomo/Duomo - Ghisallo.jpg"
     },
     {
       "id": 33,
@@ -1178,7 +1180,8 @@
         "Corso di Porta Vicentina",
         "Dx Via Quadronno",
         "MADONNINA"
-      ]
+      ],
+      "immagine": "Duomo/Duomo - Madonnina.jpg"
     },
     {
       "id": 34,
@@ -1233,7 +1236,8 @@
         "Piazza Bolivar",
         "Via Lorenteggio",
         "Piazza Frattini"
-      ]
+      ],
+      "immagine": "Duomo/Duomo - P.za Frattini.jpg"
     },
     {
       "id": 36,
@@ -1335,7 +1339,8 @@
         "Largo Boccioni",
         "Via Grassi",
         "Ospedale Sacco"
-      ]
+      ],
+      "immagine": "Duomo/Duomo - Sacco.jpg"
     },
     {
       "id": 39,
@@ -1356,7 +1361,8 @@
         "Via Larga",
         "Dx Piazza S. Stefano",
         "Dx Via Festa del Perdono"
-      ]
+      ],
+      "immagine": "Duomo/Duomo - Statale.jpg"
     }
   ],
   "Ospedali": [
