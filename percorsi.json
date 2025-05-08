@@ -521,7 +521,8 @@
         "Dx Via Cozzi",
         "Via dell' innovazione",
         "TEATRO ARCIMBOLDI"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate Prime - Arcimboldi.jpg"
     },
     {
       "id": 14,
@@ -552,7 +553,8 @@
         "Uscita Bergamo",
         "Dx Direzione Val Seriana",
         "Prima Uscita a Dx e seguo le indicazioni per il terminal"
-      ]
+      ],
+      "immagine": "Aeroporti/Loreto - Orio.jpg"
     },
     {
       "id": 15,
@@ -683,7 +685,8 @@
         "Largo la Foppa",
         "Via Statuto",
         "Largo Treves"
-      ]
+      ],
+      "immagine": "Aeroporti/Malpensa - Treves.jpg"
     },
     {
       "id": 19,
