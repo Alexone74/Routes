@@ -83,7 +83,8 @@
         "Via Varrè",
         "Sx Mercantini",
         "Piazza Bausan"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Bovisa.jpg"
     },
     {
       "id": 3,
@@ -174,7 +175,8 @@
         "Piazza Lima",
         "Via Vitruvio",
         "Piazza Duca d'Aosta"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Centrale.jpg"
     },
     {
       "id": 5,
@@ -213,7 +215,8 @@
         "Sotto tunnel di porta nuova",
         "Don Sturzo",
         "Piazza Freud"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Garibaldi.jpg"
     },
     {
       "id": 6,
@@ -235,7 +238,8 @@
         "Cormano",
         "Viale Certosa",
         "Prendo A8 direzione Laghi"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Malpensa.jpg"
     },
     {
       "id": 7,
@@ -303,7 +307,8 @@
         "Uscita Bergamo",
         "Dx Direzione Val Seriana",
         "Prima Uscita a Dx e seguo le indicazioni per il terminal"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Orio.jpg"
     },
     {
       "id": 9,
@@ -359,7 +364,8 @@
         "Largo Boccioni",
         "Via Grassi",
         "Ospedale Sacco"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Osp Sacco.jpg"
     },
     {
       "id": 10,
@@ -409,7 +415,8 @@
         "Via Losanna",
         "Via Arona",
         "Piazza Carlomagno"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - P.za Carlomagno.jpg"
     },
     {
       "id": 11,
@@ -442,7 +449,8 @@
         "Viale Gorizia",
         "Sx Via Vigevano",
         "Porta Genova"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Porta Genova.jpg"
     },
     {
       "id": 12,
@@ -469,7 +477,8 @@
         "Piazza Tricolore",
         "Corso Monforte (Prefettura)",
         "S.Babila"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - S Babila.jpg"
     },
     {
       "id": 13,
@@ -705,7 +714,8 @@
         "Via Settembrini",
         "Dx Via Scarlatti",
         "Piazza Luigi di Savoia"
-      ]
+      ],
+      "immagine": "Aeroporti/Orio - Stazione Centrale.jpg"
     }
   ],
   "Autostrade": [
@@ -737,7 +747,8 @@
         "Ferno",
         "Casorate Sempione e sono al Terminal 2",
         "Somma Lombarda e sono al Terminal 1"
-      ]
+      ],
+      "immagine": "Autostrade/Ai Laghi - Malpensa.jpg"
     },
     {
       "id": 21,
@@ -764,7 +775,8 @@
         "Dopo sul raccordo",
         "prendo A4 direzione Torino",
         "Esco Rho fiera porta EST-SUD"
-      ]
+      ],
+      "immagine": "Autostrade/Ghisallo - Rho.jpg"
     }
   ],
   "Cerchie": [
@@ -818,8 +830,7 @@
         "Piazza Conciliazione",
         "Via Toti",
         "Piazzale Baracca"
-      ],
-      "immagine": "Cerchie/Cerchia dei Bastioni.jpg"
+      ]
     },
     {
       "id": 24,
@@ -848,7 +859,8 @@
         "Largo Cairoli con Largo Maria Callas",
         "Foro Bonaparte (numeri dispari)",
         "Piazza Cadorna"
-      ]
+      ],
+      "immagine": "Cerchie/Cerchia Dei Navigli.jpg"
     },
     {
       "id": 25,
@@ -912,8 +924,7 @@
         "Piazza Stuparich",
         "Viale Elia",
         "Piazzale Lotto"
-      ],
-      "immagine": "Cerchie/Circonvallazione Esterna 90 91.jpg"
+      ]
     },
     {
       "id": 26,
@@ -1460,8 +1471,7 @@
       "nome": "Bocconi - Politecnico",
       "vie": [
         "Via Bocconi",
-        "Largo Isabella d'Aragona",
-        "Sx Viale Bligny",
+        "Dx Viale Bligny",
         "Via Sabotino",
         "Piazza Medaglie d'oro",
         "Via Monte Nero",
@@ -1516,6 +1526,51 @@
     },
     {
       "id": 47,
+      "nome": "IEO - Caronno",
+      "vie": [
+        "Via Ripamonti",
+        "All'altezza del capolinea del 24",
+        "Sx Bretella Ferraris",
+        "Sx Via Antonini",
+        "Dx Via Carlo Bazzi",
+        "Via Castelbarco (Tibaldi/Toscana)",
+        "Piazza Sraffa (università Bocconi)",
+        "Via Teulie",
+        "Porta Ludovica",
+        "Corso Italia (Scuola Militare Teulie)",
+        "Sx Via S. Luca",
+        "Dx Via Calatafini",
+        "Sx S. Croce",
+        "Sx Molino delle Armi",
+        "Via De Amicis",
+        "Piazza Resistenza Partigina",
+        "Via De Amicis",
+        "Via Carducci",
+        "Largo Paolo d'Ancona",
+        "Via Carducci",
+        "Piazza Cadorna",
+        "Via Alemagna",
+        "Viale Milton",
+        "Via Canova",
+        "Sx Corso Sempione",
+        "Piazza Firenze",
+        "Viale Certosa",
+        "Piazzale ai Laghi",
+        "Via Montefeltro",
+        "prendo il raccordo",
+        "Dx Uscita sacco/Cogne",
+        "Via G B Grassi",
+        "SS 233 Varesina esco dal Comune di Milano",
+        "Passo I comuni di",
+        "Baranzate",
+        "Bollate",
+        "Arese",
+        "Garbagnate",
+        "Caronno Pertusella"
+      ]
+    },
+    {
+      "id": 48,
       "nome": "IEO - Duomo - Nigurada",
       "vie": [
         "Via Ripamonti",
@@ -1563,7 +1618,7 @@
       ]
     },
     {
-      "id": 48,
+      "id": 49,
       "nome": "IEO - Linate",
       "vie": [
         "Via Ripamonti",
@@ -1589,7 +1644,7 @@
       ]
     },
     {
-      "id": 49,
+      "id": 50,
       "nome": "IEO - Rogoredo",
       "vie": [
         "Via Ripamonti",
@@ -1610,7 +1665,7 @@
       "immagine": "Ospedali/IEO - Rogoredo.jpg"
     },
     {
-      "id": 50,
+      "id": 51,
       "nome": "Istituto Tumori - Centrale",
       "vie": [
         "Via Venezian",
@@ -1626,7 +1681,7 @@
       ]
     },
     {
-      "id": 51,
+      "id": 52,
       "nome": "Istituto Tumori - Piemonte",
       "vie": [
         "Via Venezian",
@@ -1672,7 +1727,50 @@
       ]
     },
     {
-      "id": 52,
+      "id": 53,
+      "nome": "Monzino - Affari",
+      "vie": [
+        "Via Parea",
+        "Via Vittorini",
+        "Via Mecenate",
+        "Piazza Ovidio",
+        "Via Marco Bruto",
+        "Via Repetti",
+        "Sx Viale Forlanini",
+        "3 Ponti",
+        "Viale Corsica",
+        "Largo Rodari",
+        "Viale Corsica",
+        "Corso XXII Marzo",
+        "Piazza Grandi",
+        "Corso XXII Marzo",
+        "Piazza Emilia",
+        "Corso XXII Marzo",
+        "Piazza Santa maria del Suffragio",
+        "Corso XXII Marzo",
+        "Piazza 5 Giornate",
+        "Corso di Porta Vittoria",
+        "Via Cesare Battisti",
+        "Via Cavallotti",
+        "Sx Corso Europa",
+        "Largo Bersaglieri",
+        "Via Larga",
+        "Dx Via Baracchini",
+        "Piazza Diaz",
+        "Via Giardino",
+        "Largo Borges",
+        "Via Falcone",
+        "Dx Via Unione",
+        "Dx Via Torino",
+        "Sx Via Spadari",
+        "Via Armorari",
+        "Piazza Edison",
+        "Via Della Posta",
+        "Piazza Affari"
+      ]
+    },
+    {
+      "id": 54,
       "nome": "Monzino - Niguarda",
       "vie": [
         "Via Vittorini",
@@ -1712,7 +1810,7 @@
       ]
     },
     {
-      "id": 53,
+      "id": 55,
       "nome": "Niguarda - Abbiategrasso e Humanitas",
       "vie": [
         "Via Benefattori dell Ospedale",
@@ -1755,7 +1853,7 @@
       ]
     },
     {
-      "id": 54,
+      "id": 56,
       "nome": "Niguarda - Cadorna",
       "vie": [
         "Via benefattori dell' Ospedale",
@@ -1778,7 +1876,7 @@
       ]
     },
     {
-      "id": 55,
+      "id": 57,
       "nome": "Niguarda - Duomo",
       "vie": [
         "Via benefattori dell’ospedale",
@@ -1805,7 +1903,70 @@
       ]
     },
     {
-      "id": 56,
+      "id": 58,
+      "nome": "Niguarda - Linate",
+      "vie": [
+        "Via Benefattori dell'Ospedale",
+        "Piazza Nizza",
+        "Via Murat",
+        "Via Lario",
+        "Sx Viale Stelvio",
+        "Viale Nazzario Sauro",
+        "Piazza Appio Claudio",
+        "Viale Nazzario Sauro",
+        "Viale Sondrio",
+        "Via Tonale",
+        "Tunnel del Mortirolo",
+        "Via Pergolesi",
+        "Piazza Caiazzo",
+        "Via Pergolesi",
+        "Via Piccinini",
+        "Dx Viale Abruzzi",
+        "Piazza Ascoli",
+        "Via Tiepolo",
+        "Dx Via Verrocchio",
+        "Piazza Novelli",
+        "Via Sidoli",
+        "Dx Via Gozzi",
+        "Piazza Susa",
+        "Via dall'Ongaro",
+        "Piazza Adigrat",
+        "Via Sassi",
+        "Sx Viale Corsica",
+        "Largo Rodari",
+        "Viale Corsica",
+        "sotto i 3 Ponti",
+        "Viale Forlanini",
+        "Piazza Artigianato",
+        "Sotto Tangenziale Est",
+        "Viale Forlanini",
+        "LINATE"
+      ]
+    },
+    {
+      "id": 59,
+      "nome": "S. Carlo - Alfieri",
+      "vie": [
+        "Via S. Giusto",
+        "Sotto passo Patroclo",
+        "Via Patroclo",
+        "Dx Via Ippodromo",
+        "Via Diomede",
+        "Sx Alcamo",
+        "Dx Cremosano",
+        "Piazza Stuparich",
+        "Via Renato Serra",
+        "Via Monte Ceneri",
+        "Piazza Lugano",
+        "Sx Via Scalvini",
+        "Sx Imbriani",
+        "Piazza Bausan",
+        "Via Brofferio",
+        "Sx Via Candiani"
+      ]
+    },
+    {
+      "id": 60,
       "nome": "S. Carlo - Linate",
       "vie": [
         "Via Pio II",
@@ -1863,7 +2024,7 @@
       ]
     },
     {
-      "id": 57,
+      "id": 61,
       "nome": "S. Carlo - Sacco",
       "vie": [
         "Via Pio II",
@@ -1883,7 +2044,7 @@
       ]
     },
     {
-      "id": 58,
+      "id": 62,
       "nome": "S. Paolo - Duomo",
       "vie": [
         "Via DiRudini",
@@ -1913,7 +2074,38 @@
       ]
     },
     {
-      "id": 59,
+      "id": 63,
+      "nome": "S. Paolo - Monzino",
+      "vie": [
+        "Via S. Vigilio",
+        "Dx Viale Famagosta",
+        "Piazza Maggi",
+        "Cavalcavia Schiavoni",
+        "Via Cermenate",
+        "Via Antonia",
+        "Piazza Chiaradia",
+        "Via Pasinetti",
+        "Sx Via Ripamonti",
+        "Dx Viale Ortles",
+        "Piazza Bonomelli",
+        "Via Brenta",
+        "Via Bacchiglione",
+        "Piazza Bologna",
+        "Via Sulmona",
+        "Sotto passo Varsavia",
+        "Sx Via Varsavia",
+        "Via Vismara",
+        "Dx via Lombroso",
+        "Piazza Cartagine",
+        "Via Regolo",
+        "Piazza Ovidio",
+        "Via Mecenate",
+        "Via Vittorini",
+        "Via Parea"
+      ]
+    },
+    {
+      "id": 64,
       "nome": "S. Paolo - S. Carlo",
       "vie": [
         "Via Di Rudini",
@@ -1936,7 +2128,7 @@
       ]
     },
     {
-      "id": 60,
+      "id": 65,
       "nome": "S. Raffaele - Centrale",
       "vie": [
         "Sx Via Olgettiva",
@@ -1955,7 +2147,7 @@
       ]
     },
     {
-      "id": 61,
+      "id": 66,
       "nome": "S.Paolo - S. Siro (AXUM)",
       "vie": [
         "Via DiRudini",
@@ -1976,7 +2168,7 @@
       ]
     },
     {
-      "id": 62,
+      "id": 67,
       "nome": "Sacco - Cadorna",
       "vie": [
         "Via G.B. Grassi",
@@ -2000,7 +2192,7 @@
       ]
     },
     {
-      "id": 63,
+      "id": 68,
       "nome": "Sacco - Caronno Pertusella",
       "vie": [
         "Lascio L'ospedale a Dx",
@@ -2015,7 +2207,7 @@
       ]
     },
     {
-      "id": 64,
+      "id": 69,
       "nome": "Sacco - Rogoredo",
       "vie": [
         "Via G.B Grassi",
@@ -2070,7 +2262,7 @@
   ],
   "Piazze": [
     {
-      "id": 65,
+      "id": 70,
       "nome": "24 Maggio - Galeazzi",
       "vie": [
         "Corso Porta Ticinese",
@@ -2105,7 +2297,7 @@
       "immagine": "Piazze/24 Maggio - Galeazzi.jpg"
     },
     {
-      "id": 66,
+      "id": 71,
       "nome": "24 Maggio - Malpensa",
       "vie": [
         "Corso Porta Ticinese",
@@ -2153,7 +2345,7 @@
       "immagine": "Piazze/24 Maggio - Malpensa.jpg"
     },
     {
-      "id": 67,
+      "id": 72,
       "nome": "24 Maggio - Monzino",
       "vie": [
         "Via Col di Lana",
@@ -2180,7 +2372,7 @@
       ]
     },
     {
-      "id": 68,
+      "id": 73,
       "nome": "24 Maggio - Orio",
       "vie": [
         "Corso di Porta Ticinese",
@@ -2221,7 +2413,7 @@
       ]
     },
     {
-      "id": 69,
+      "id": 74,
       "nome": "24 Maggio - P.za Buonarroti",
       "vie": [
         "Viale Gorizia",
@@ -2239,7 +2431,7 @@
       "immagine": "Piazze/24 Maggio - P.za Buonarroti.jpg"
     },
     {
-      "id": 70,
+      "id": 75,
       "nome": "24 Maggio - Rho",
       "vie": [
         "Via Gorizia",
@@ -2270,7 +2462,7 @@
       "immagine": "Piazze/24 Maggio - Rho.jpg"
     },
     {
-      "id": 71,
+      "id": 76,
       "nome": "5 Alpini - Mascagni",
       "vie": [
         "Via Vincenzo Monti",
@@ -2293,7 +2485,47 @@
       "immagine": "Piazze/5 Alpini - Mascagni.jpg"
     },
     {
-      "id": 72,
+      "id": 77,
+      "nome": "5 Giornate - Accursio",
+      "vie": [
+        "Corso di Porta Vittoria",
+        "Largo Augusto",
+        "Via Cavallotti",
+        "Sx Corso Europa",
+        "Largo Bersaglieri",
+        "Via Larga",
+        "Dx Via Baracchini",
+        "Piazza Diaz",
+        "Via Giardino",
+        "Largo Borges",
+        "Via Falcone",
+        "Dx Via Unione",
+        "Dx Via Torino",
+        "Sx Via Spadari",
+        "Via Armorari",
+        "Sx Via Cordusio",
+        "Piazza Edison",
+        "Via della Posta",
+        "Via S. Maria Fulcorina",
+        "Via S. Maria alla Porta",
+        "Sx corso Magenta",
+        "Largo Enzo Tortora",
+        "Corso Magenta",
+        "Largo Paolo d'Ancona",
+        "Dx Via Carducci",
+        "Piazza Cadorna",
+        "Via Paleocapa",
+        "Via Alemagna",
+        "Viale Milton",
+        "Via Canova",
+        "Sx Corso Sempione",
+        "Piazza Firenze",
+        "Viale Certosa",
+        "Piazza Accursio"
+      ]
+    },
+    {
+      "id": 78,
       "nome": "5 Giornate - Bocconi",
       "vie": [
         "Corso di Porta Vittoria",
@@ -2318,7 +2550,7 @@
       ]
     },
     {
-      "id": 73,
+      "id": 79,
       "nome": "5 Giornate - L.go d’Ancona",
       "vie": [
         "Corso di Porta Vittoria (a Sx il Tribunale a Dx S.Pietro in gessate)",
@@ -2348,7 +2580,7 @@
       ]
     },
     {
-      "id": 74,
+      "id": 80,
       "nome": "5 Giornate - Linate Prime",
       "vie": [
         "Corso XXII Marzo",
@@ -2373,7 +2605,7 @@
       ]
     },
     {
-      "id": 75,
+      "id": 81,
       "nome": "Abbiategrasso - Carbonari",
       "vie": [
         "Via Meneghino",
@@ -2411,7 +2643,7 @@
       ]
     },
     {
-      "id": 77,
+      "id": 83,
       "nome": "Abbiategrasso - Garibaldi",
       "vie": [
         "Via Medeghino",
@@ -2450,7 +2682,7 @@
       "immagine": "Piazze/Abbiategrasso - Garibaldi.jpg"
     },
     {
-      "id": 76,
+      "id": 82,
       "nome": "Abbiategrasso - Garibaldi ver 2",
       "vie": [
         "Via Medeghino",
@@ -2479,7 +2711,7 @@
       "immagine": "Piazze/Abbiategrasso - Garibaldi ver 2.jpg"
     },
     {
-      "id": 78,
+      "id": 84,
       "nome": "Abbiategrasso - Linate",
       "vie": [
         "Via Medeghino",
@@ -2513,7 +2745,7 @@
       "immagine": "Piazze/Abbiategrasso - Linate.jpg"
     },
     {
-      "id": 79,
+      "id": 85,
       "nome": "Abbiategrasso - Niguarda (e pronto soccorso)",
       "vie": [
         "Via Medeghino",
@@ -2570,7 +2802,7 @@
       ]
     },
     {
-      "id": 80,
+      "id": 86,
       "nome": "Accursio - 5 Giornate",
       "vie": [
         "Viale Certosa",
@@ -2604,7 +2836,27 @@
       ]
     },
     {
-      "id": 81,
+      "id": 87,
+      "nome": "Accursio - Cenacolo",
+      "vie": [
+        "Viale Traiano",
+        "Dx Viale Teodorico",
+        "Sx Via Gattamelata",
+        "Viale Duilio",
+        "Viale Boezio",
+        "Piazza 6 Febbraio",
+        "Viale Cassiodoro",
+        "Sx Via Rossetti",
+        "Via Mascheroni",
+        "Largo Monsignor Bicchierai",
+        "Piazza Tomaseo",
+        "Via Mascheroni",
+        "Piazza Giovane Italia",
+        "Via Ruffini"
+      ]
+    },
+    {
+      "id": 88,
       "nome": "Accursio - Gaetano Pini",
       "vie": [
         "Viale Certosa",
@@ -2629,7 +2881,7 @@
       ]
     },
     {
-      "id": 82,
+      "id": 89,
       "nome": "Accursio - Mudec",
       "vie": [
         "Via Traiano",
@@ -2660,7 +2912,22 @@
       ]
     },
     {
-      "id": 83,
+      "id": 90,
+      "nome": "Accursio - Nerviano",
+      "vie": [
+        "Via Gallarate",
+        "Piazza Cimitero Maggiore",
+        "Via Gallarate",
+        "a molino dorino entro nel comune di Pero",
+        "imbocco la 33 del Sempione",
+        "Passo i Comuni di",
+        "Pero",
+        "Rho",
+        "Nerviano"
+      ]
+    },
+    {
+      "id": 91,
       "nome": "Affari - Cilea",
       "vie": [
         "Via S. Maria Fulcorina",
@@ -2692,7 +2959,7 @@
       ]
     },
     {
-      "id": 84,
+      "id": 92,
       "nome": "Amendola - Centrale",
       "vie": [
         "Viale Ezio",
@@ -2720,7 +2987,7 @@
       ]
     },
     {
-      "id": 85,
+      "id": 93,
       "nome": "Aquileia - P.Le Loreto",
       "vie": [
         "Viale Papinanio",
@@ -2747,7 +3014,7 @@
       ]
     },
     {
-      "id": 86,
+      "id": 94,
       "nome": "Ascoli - Fatebenefratelli",
       "vie": [
         "Via Scipioni",
@@ -2775,7 +3042,7 @@
       ]
     },
     {
-      "id": 87,
+      "id": 95,
       "nome": "Ascoli - S. Babila",
       "vie": [
         "Via Scipioni",
@@ -2799,7 +3066,7 @@
       ]
     },
     {
-      "id": 88,
+      "id": 96,
       "nome": "Axum - Garibaldi",
       "vie": [
         "Via Rospigliosi",
@@ -2829,7 +3096,7 @@
       ]
     },
     {
-      "id": 89,
+      "id": 97,
       "nome": "Axum - Monumentale",
       "vie": [
         "Via Rospigliosi",
@@ -2853,7 +3120,33 @@
       ]
     },
     {
-      "id": 90,
+      "id": 98,
+      "nome": "Baiamonti - Caronno",
+      "vie": [
+        "Via Ceresio",
+        "Piazza Cimitero Monumentale",
+        "Via Luigi IX",
+        "Piazza Coriolano",
+        "Via Cenisio",
+        "Piazza Diocleziano",
+        "Via Macmahon",
+        "Piazza Castelli",
+        "Via Console Narcello",
+        "Cavalcavia Palizzi",
+        "Via Palizzi",
+        "Via Mambretti",
+        "Largo Boccioni",
+        "Via G.B. Grassi",
+        "Ospedale Sacco",
+        "Baranzate",
+        "Bollate",
+        "Arese",
+        "Garbagnate",
+        "Caronno Pertusella"
+      ]
+    },
+    {
+      "id": 99,
       "nome": "Baiamonti - Sacco",
       "vie": [
         "Via Ceresio",
@@ -2873,7 +3166,7 @@
       ]
     },
     {
-      "id": 91,
+      "id": 100,
       "nome": "Bande Nere - Fatebenefratelli",
       "vie": [
         "Via Caterina da Forli",
@@ -2908,7 +3201,7 @@
       ]
     },
     {
-      "id": 93,
+      "id": 102,
       "nome": "Bande Nere - Garibaldi",
       "vie": [
         "Viale Caterina da Forli",
@@ -2940,7 +3233,7 @@
       ]
     },
     {
-      "id": 92,
+      "id": 101,
       "nome": "Bande Nere - Garibaldi ver 2",
       "vie": [
         "Viale Pisa",
@@ -2976,7 +3269,7 @@
       ]
     },
     {
-      "id": 94,
+      "id": 103,
       "nome": "Bande Nere - Istituto Tumori",
       "vie": [
         "Caterina da Forli",
@@ -3027,7 +3320,7 @@
       ]
     },
     {
-      "id": 95,
+      "id": 104,
       "nome": "Bande Nere - Linate Prime",
       "vie": [
         "Viale Pisa",
@@ -3085,7 +3378,7 @@
       ]
     },
     {
-      "id": 96,
+      "id": 105,
       "nome": "Bande Nere - S. Babila da Pisa",
       "vie": [
         "Viale Pisa",
@@ -3125,7 +3418,7 @@
       ]
     },
     {
-      "id": 97,
+      "id": 106,
       "nome": "Baracca - Istituto dei Tumori",
       "vie": [
         "Corso Magenta",
@@ -3166,7 +3459,7 @@
       ]
     },
     {
-      "id": 98,
+      "id": 107,
       "nome": "Baracca - P.za Tricolore",
       "vie": [
         "Corso magenta (a Sx chiesa di S Maria delle Grazie)",
@@ -3194,7 +3487,7 @@
       ]
     },
     {
-      "id": 99,
+      "id": 108,
       "nome": "Bausan - Bottini",
       "vie": [
         "Via Imbriani",
@@ -3224,7 +3517,7 @@
       ]
     },
     {
-      "id": 100,
+      "id": 109,
       "nome": "Bausan - L.go Gadda",
       "vie": [
         "Piazza Bausan",
@@ -3243,7 +3536,7 @@
       ]
     },
     {
-      "id": 101,
+      "id": 110,
       "nome": "Bologna - S. Siro",
       "vie": [
         "Via Bacchiglione",
@@ -3275,7 +3568,7 @@
       ]
     },
     {
-      "id": 102,
+      "id": 111,
       "nome": "Bonomelli - Malpensa",
       "vie": [
         "Via Brenta",
@@ -3314,7 +3607,7 @@
       ]
     },
     {
-      "id": 103,
+      "id": 112,
       "nome": "Bonomelli - Oftalmico",
       "vie": [
         "Via Brenta",
@@ -3338,7 +3631,7 @@
       ]
     },
     {
-      "id": 104,
+      "id": 113,
       "nome": "Bonomelli - Policlinico",
       "vie": [
         "Viale Brenta",
@@ -3358,7 +3651,7 @@
       ]
     },
     {
-      "id": 106,
+      "id": 115,
       "nome": "Brescia - Bottini",
       "vie": [
         "Via Faruffini",
@@ -3405,7 +3698,7 @@
       ]
     },
     {
-      "id": 105,
+      "id": 114,
       "nome": "Brescia - Bottini ver2",
       "vie": [
         "Via Lorenzo di Credi",
@@ -3451,7 +3744,7 @@
       ]
     },
     {
-      "id": 107,
+      "id": 116,
       "nome": "Brescia - Lambrate",
       "vie": [
         "Via Murillo",
@@ -3492,7 +3785,7 @@
       ]
     },
     {
-      "id": 108,
+      "id": 117,
       "nome": "Buozzi - Centrale",
       "vie": [
         "Via Papi",
@@ -3512,7 +3805,48 @@
       ]
     },
     {
-      "id": 109,
+      "id": 118,
+      "nome": "Cadorna - Mentana - Linate",
+      "vie": [
+        "Via Carducci",
+        "Largo Paolo d’Ancona",
+        "Corso Magenta",
+        "Dx S. Maria alla Porta",
+        "Dx Via Borromei",
+        "Piazza Borromeo",
+        "Dx Via S. Orsola",
+        "Sx Via Morigi",
+        "Piazza Mentana",
+        "Via S. Sito",
+        "Largo Carrobbio",
+        "Via Cesare Correnti",
+        "Piazza Resistenza Partigiana",
+        "Corso Genova",
+        "Sx Battista Torti",
+        "Sx Conca del Naviglio",
+        "Dx deAmicis",
+        "Via Molino delle Armi",
+        "Via Santa Sofia",
+        "Via francesco Sforza",
+        "Dx Corso di Porta Vittoria",
+        "Piazza 5 Giornate",
+        "Corso XXII Marzo",
+        "Piazza S.Maria del Suffragio",
+        "Corso XXII Marzo",
+        "Piazza Emilia",
+        "Corso XXII Marzo",
+        "Piazza Grandi",
+        "Corso XXII Marzo",
+        "Viale Corsica",
+        "Largo Rodari",
+        "Passo sotto i 3 Ponti",
+        "Viale Forlanini",
+        "Piazza Artigianato",
+        "Viale Forlanini"
+      ]
+    },
+    {
+      "id": 119,
       "nome": "Cadorna - Treves",
       "vie": [
         "Foro Bonaparte dispari",
@@ -3529,7 +3863,7 @@
       ]
     },
     {
-      "id": 110,
+      "id": 120,
       "nome": "Carlo Magno - Linate",
       "vie": [
         "Via Arona",
@@ -3578,7 +3912,7 @@
       ]
     },
     {
-      "id": 111,
+      "id": 121,
       "nome": "Castelli - Tricolore",
       "vie": [
         "Via Mac Mahon",
@@ -3601,7 +3935,7 @@
       ]
     },
     {
-      "id": 112,
+      "id": 122,
       "nome": "Cavour - Rogoredo",
       "vie": [
         "Via Senato",
@@ -3630,7 +3964,44 @@
       ]
     },
     {
-      "id": 113,
+      "id": 123,
+      "nome": "Cavouur - Gesu",
+      "vie": [
+        "Via Manzoni",
+        "Sx Via Bigli",
+        "Sx Via Verri",
+        "Sx Via Montenapoleone",
+        "Dx Via Gesu",
+        "Sx Via della Spiga",
+        "Sx Via Santo Spirito",
+        "Dx Via Montenapoleone",
+        "Dx Via Manzoni",
+        "Piazza Cavour",
+        "Via Palestro",
+        "Dx Corso Venezia",
+        "Sx Via Serbelloni",
+        "Sx Via Cappuccini",
+        "Via DeBernardi",
+        "Via Bellotti",
+        "Via Modena",
+        "Piazza Novelli",
+        "Via Sidoli",
+        "Dx Gozzi",
+        "Piazza Susa",
+        "Via dall'Ongaro",
+        "Piazza Adigrat",
+        "Via Battitstotti Sassi",
+        "Sx Viale Corsica",
+        "Largo Rodari",
+        "Viale Corsixa",
+        "Passo sotto i 3 Ponti",
+        "Viale Forlanini",
+        "Piazza dell'Artigianato",
+        "Viale Forlanini"
+      ]
+    },
+    {
+      "id": 124,
       "nome": "Cordusio - San Carlo",
       "vie": [
         "Via Dante",
@@ -3660,7 +4031,7 @@
       ]
     },
     {
-      "id": 114,
+      "id": 125,
       "nome": "DeAngeli - Linate",
       "vie": [
         "Via Sacco",
@@ -3713,7 +4084,48 @@
       ]
     },
     {
-      "id": 115,
+      "id": 126,
+      "nome": "Duomo - Corbetta",
+      "vie": [
+        "Via Mengoni",
+        "Sx Via S. Protasio",
+        "Sx Via Porrone",
+        "Via S. Prospero",
+        "Via Meravigli (Piazza S. Pietro e Lino - Camera di Commercio)",
+        "Via Meravigli",
+        "Corso Magenta",
+        "Largo Enzo Tortora",
+        "Corso Magenta",
+        "Largo Paolo d'Ancona",
+        "Corso Magenta",
+        "Piazza Baracca",
+        "Corso Vercelli",
+        "Largo Settimio Severo",
+        "Corso Vercelli",
+        "Piazza Piemonte",
+        "Via Cuneo",
+        "Sx Via Marghera",
+        "Piazza De Angeli",
+        "Via Parmigianino",
+        "Piazza del Ghirlandaio",
+        "Viale Rubens",
+        "P.zza Velasquez",
+        "Via Rembrant",
+        "Piazza Melozzo",
+        "Via Novara",
+        "Piazza Amati",
+        "Via Novara",
+        "Via Cascina Bellaria",
+        "Via Novara (esco dal Comune di Milano)",
+        "SS 11 Padana Superiore",
+        "Settimo Milanese",
+        "S.Pietro al Olmo",
+        "Bareggio",
+        "Sedriano"
+      ]
+    },
+    {
+      "id": 127,
       "nome": "Firenze - Centrale",
       "vie": [
         "Via Cenisio",
@@ -3737,7 +4149,7 @@
       ]
     },
     {
-      "id": 116,
+      "id": 128,
       "nome": "Firenze - Linate",
       "vie": [
         "Via Cenisio",
@@ -3787,7 +4199,7 @@
       ]
     },
     {
-      "id": 117,
+      "id": 129,
       "nome": "Firenze - Mangiagalli",
       "vie": [
         "Corso Sempione",
@@ -3818,7 +4230,7 @@
       ]
     },
     {
-      "id": 118,
+      "id": 130,
       "nome": "Firenze - P.za Perrucchetti",
       "vie": [
         "Via Lauria",
@@ -3838,7 +4250,7 @@
       ]
     },
     {
-      "id": 119,
+      "id": 131,
       "nome": "Fontana - Rogoredo",
       "vie": [
         "Via S. Clemente",
@@ -3870,7 +4282,7 @@
       ]
     },
     {
-      "id": 120,
+      "id": 132,
       "nome": "Fontana - Statale - Bottini",
       "vie": [
         "Via San Clemente",
@@ -3903,20 +4315,19 @@
       ]
     },
     {
-      "id": 121,
+      "id": 133,
       "nome": "Gabrio Rosa - Niguarda",
       "vie": [
-        "Piazza Gabrio Rosa",
-        "Via Enrico Martini",
+        "Via Martini",
         "Piazza Corvetto",
         "Viale Lucania",
         "Piazza Bologna",
-        "Viale Puglie",
+        "Viale Puglia",
         "Piazza Cuoco",
-        "Viale Molise",
+        "Viala Molise",
         "Viale Mugello",
         "Viale Campania",
-        "Piazza Susa",
+        "Piazzale Susa",
         "Viale Romagna",
         "Piazza Ferravilla",
         "Viale Romagna",
@@ -3924,28 +4335,29 @@
         "Viale Romagna",
         "Piazza Leonardo Da Vinci",
         "Viale Romagna",
-        "Piazza Piola",
+        "Piazzale Piola",
         "Viale Gran Sasso",
         "Via Stradivari",
         "Piazza Argentina",
         "Via Palestrina",
         "Sx Via Andrea Doria",
-        "Dx Via Pergolesi",
+        "Piazza Caiazzo",
+        "Via Pergolesi",
         "Tunnel del Mortirolo",
         "Via Tonale",
-        "Via Sondrio",
-        "Viale Nazzaro Sauro",
+        "Viale Sondrio",
+        "Viale Nazaro Saurio",
         "Piazza Appio Claudio",
-        "Viale Nazzaro Sauro",
+        "Viale Nazaro Saurio",
         "Viale Stelvio",
         "Dx Via Lario",
         "Via Murat",
         "Piazza Nizza",
-        "Via Benefattori dell'Ospedale"
+        "Via Benefattori dell’Ospedale"
       ]
     },
     {
-      "id": 122,
+      "id": 134,
       "nome": "Istria - Linate",
       "vie": [
         "Via Abbazia",
@@ -3984,7 +4396,7 @@
       ]
     },
     {
-      "id": 123,
+      "id": 135,
       "nome": "Istria - S. Giuseppe",
       "vie": [
         "Viale Zara",
@@ -4012,7 +4424,7 @@
       ]
     },
     {
-      "id": 124,
+      "id": 136,
       "nome": "Istria - Scala",
       "vie": [
         "Via Abbazia",
@@ -4038,7 +4450,7 @@
       ]
     },
     {
-      "id": 125,
+      "id": 137,
       "nome": "L.go Augusto - S.Raffaele",
       "vie": [
         "Corso Porta Vittoria",
@@ -4063,7 +4475,7 @@
       ]
     },
     {
-      "id": 126,
+      "id": 138,
       "nome": "Lagosta - Affari",
       "vie": [
         "Via Pola",
@@ -4091,7 +4503,7 @@
       ]
     },
     {
-      "id": 127,
+      "id": 139,
       "nome": "Lagosta - Linate",
       "vie": [
         "Via Pola",
@@ -4122,7 +4534,7 @@
       ]
     },
     {
-      "id": 128,
+      "id": 140,
       "nome": "Libia - Duomo - Brera",
       "vie": [
         "Via Tiraboschi",
@@ -4150,7 +4562,7 @@
       ]
     },
     {
-      "id": 129,
+      "id": 141,
       "nome": "Libia - San Babila",
       "vie": [
         "Via Cadore",
@@ -4165,7 +4577,7 @@
       ]
     },
     {
-      "id": 130,
+      "id": 142,
       "nome": "Lodovica - P.Alfieri (Bovisa)",
       "vie": [
         "Corso Italia",
@@ -4213,7 +4625,7 @@
       ]
     },
     {
-      "id": 131,
+      "id": 143,
       "nome": "Lodovica - P.za Bottini",
       "vie": [
         "Viale Bligny",
@@ -4238,7 +4650,7 @@
       ]
     },
     {
-      "id": 132,
+      "id": 144,
       "nome": "Loreto - Humanitas",
       "vie": [
         "Corso Buenos Aires",
@@ -4272,7 +4684,64 @@
       ]
     },
     {
-      "id": 133,
+      "id": 145,
+      "nome": "Loreto - S. Agostino",
+      "vie": [
+        "Corso Buenos Aires",
+        "Piazza Argentina",
+        "Corso Buenos Aires",
+        "Piazza Lima",
+        "Corso Buenos Aires",
+        "Piazza Oberdan",
+        "Corso Venezia",
+        "Sx Via S. Damiano",
+        "Via Visconti di Modrone",
+        "Via Francesco Sforza",
+        "Via S. Sofia",
+        "Via Molino delle Armi",
+        "Piazza Resistenza Partigiana",
+        "S. Vincenzo",
+        "Dx Via Ariberto",
+        "Sx Via Olona",
+        "Piazza S. Agostino"
+      ]
+    },
+    {
+      "id": 146,
+      "nome": "Lotto - Orio",
+      "vie": [
+        "Viale Elia",
+        "Piazza Stuparich",
+        "Viale Renato Serra",
+        "Viale Monte Ceneri",
+        "Cavalcavia Bacula",
+        "Piazza Lugano",
+        "Viale Bodio",
+        "Piazza Nigra",
+        "Viale Jenner",
+        "Dx Via Resegone",
+        "Sx Via Lancetti",
+        "Viale Stelvio",
+        "Piazza Spotorno",
+        "Viale Stelvio",
+        "Viale Nazzario Sauro",
+        "Piazza Appio Claudio",
+        "Viale Nazzario Sauro",
+        "Viale Sondrio",
+        "Via Tonale",
+        "Sotto il tunnel del Mortirolo",
+        "Via Pergolesi",
+        "Piazza Caiazzo",
+        "Via Pergolesi",
+        "Sx Via Buenos Aires",
+        "Piazza Argentina",
+        "Via Buenos Aires",
+        "Piazza Loreto",
+        "Vedi Loreto - Orio"
+      ]
+    },
+    {
+      "id": 147,
       "nome": "Lotto - Scala",
       "vie": [
         "Via Monterosa",
@@ -4304,7 +4773,42 @@
       ]
     },
     {
-      "id": 134,
+      "id": 148,
+      "nome": "Maciacchini - S. Paolo",
+      "vie": [
+        "Via Farini",
+        "cavalvavia della Sorgente",
+        "Via Farini",
+        "Piazza Baiamonti",
+        "Via Montello",
+        "Piazza Biancamano con Legalombarda",
+        "Via Legnano",
+        "Via Gadio",
+        "Piazza Cimitero Monumentale",
+        "Via Minghetti",
+        "Piazza Cadorna",
+        "Via Carducci",
+        "Largo Paolo d'Ancona",
+        "Via Carducci",
+        "Via de Amicis",
+        "Piazza Resistenza Partigiana",
+        "Dx Corso Genova",
+        "Piazza General Cantore",
+        "Corso Colombo",
+        "Porta Genova",
+        "Via Valenza",
+        "Ripa di Porta ticinese",
+        "Via Ludovico il Moro",
+        "Sx Via Pestalozzi",
+        "Via Binda",
+        "Via Biella",
+        "Piazza Miani",
+        "Via Voltri",
+        "Sx Via DiRudini"
+      ]
+    },
+    {
+      "id": 149,
       "nome": "Maciachini - Piemonte",
       "vie": [
         "Via Farini",
@@ -4328,7 +4832,7 @@
       ]
     },
     {
-      "id": 135,
+      "id": 150,
       "nome": "Martini - San Barnaba",
       "vie": [
         "Via Oltrocchi",
@@ -4342,7 +4846,7 @@
       ]
     },
     {
-      "id": 136,
+      "id": 151,
       "nome": "Medaglie d'Oro- Pta Garibaldi",
       "vie": [
         "Viale Montenero",
@@ -4378,7 +4882,7 @@
       ]
     },
     {
-      "id": 137,
+      "id": 152,
       "nome": "Medaglie d’Oro - Linate",
       "vie": [
         "Piazze medaglie d'oro",
@@ -4415,7 +4919,7 @@
       ]
     },
     {
-      "id": 138,
+      "id": 153,
       "nome": "Medaglie d’Oro - Madonnina",
       "vie": [
         "Corso di Porta Romana",
@@ -4425,7 +4929,7 @@
       ]
     },
     {
-      "id": 139,
+      "id": 154,
       "nome": "Medaglie d’Oro - Musocco x Rho",
       "vie": [
         "Corso Porta Romana",
@@ -4460,7 +4964,7 @@
       ]
     },
     {
-      "id": 140,
+      "id": 155,
       "nome": "Missori - Osp Besta",
       "vie": [
         "Piazza Missori",
@@ -4489,7 +4993,7 @@
       ]
     },
     {
-      "id": 141,
+      "id": 156,
       "nome": "Mondadori - Linate",
       "vie": [
         "Via Bianca di Savoia",
@@ -4518,7 +5022,7 @@
       ]
     },
     {
-      "id": 142,
+      "id": 157,
       "nome": "Monumentale - Carlo Magno",
       "vie": [
         "Via Luigi IX",
@@ -4531,7 +5035,7 @@
       ]
     },
     {
-      "id": 143,
+      "id": 158,
       "nome": "Napoli - 5 Giornate",
       "vie": [
         "Via Solari",
@@ -4552,7 +5056,7 @@
       ]
     },
     {
-      "id": 144,
+      "id": 159,
       "nome": "Napoli - Arcimboli",
       "vie": [
         "Via Solari",
@@ -4601,7 +5105,7 @@
       ]
     },
     {
-      "id": 145,
+      "id": 160,
       "nome": "Napoli - Carlo Magno",
       "vie": [
         "Via Washington",
@@ -4621,7 +5125,7 @@
       ]
     },
     {
-      "id": 146,
+      "id": 161,
       "nome": "Napoli - Centrale",
       "vie": [
         "Via Solari",
@@ -4656,7 +5160,24 @@
       ]
     },
     {
-      "id": 147,
+      "id": 162,
+      "nome": "Negrelli - IEO",
+      "vie": [
+        "Via Parenzio",
+        "Viale Faenza",
+        "Piazza Miani",
+        "Viale Famagosta",
+        "Piazza Maggi",
+        "Cavalcavia Schiavoni",
+        "Via Cermenate",
+        "Via Antonini",
+        "Dx Bretella Ferraris",
+        "Al capolinea del 24",
+        "Diventa Via Ripamonti"
+      ]
+    },
+    {
+      "id": 163,
       "nome": "Ovidio - S. Paolo",
       "vie": [
         "Via Regolo",
@@ -4683,7 +5204,7 @@
       ]
     },
     {
-      "id": 148,
+      "id": 164,
       "nome": "Perrucchetti - Besta",
       "vie": [
         "Via MilleLire",
@@ -4737,7 +5258,7 @@
       ]
     },
     {
-      "id": 149,
+      "id": 165,
       "nome": "Piemonte - Centrale",
       "vie": [
         "Corso Vercelli",
@@ -4766,7 +5287,7 @@
       ]
     },
     {
-      "id": 150,
+      "id": 166,
       "nome": "Piemonte - Lambrate",
       "vie": [
         "Corso Vercelli",
@@ -4812,7 +5333,7 @@
       ]
     },
     {
-      "id": 151,
+      "id": 167,
       "nome": "Prealpi - San Vittore",
       "vie": [
         "Via Panicale",
@@ -4833,7 +5354,7 @@
       ]
     },
     {
-      "id": 152,
+      "id": 168,
       "nome": "Repubblica - 24 Maggio",
       "vie": [
         "Via Turati",
@@ -4853,7 +5374,42 @@
       ]
     },
     {
-      "id": 153,
+      "id": 169,
+      "nome": "Selinunte - Malpensa",
+      "vie": [
+        "Viale Mar Ionio",
+        "Piazza Segesta",
+        "Via Gavirate",
+        "Largo Gavirate",
+        "Via Gignese",
+        "Attraverso Via Caprilli",
+        "Via Diomede",
+        "Dx Via Sant' Elia",
+        "Via Vigorelli",
+        "Cavalcavia del Ghisallo",
+        "Prendo il raccordo",
+        "Vedi Ghisallo - Malpensa"
+      ]
+    },
+    {
+      "id": 170,
+      "nome": "Siena - Mico Gate3 ",
+      "vie": [
+        "Via Pisanello",
+        "Piazza Velasquez",
+        "Via Osoppo",
+        "Piazza Brescia",
+        "Via Lorenzo di Credi",
+        "Piazza Crivellone",
+        "Via Domenichino",
+        "Piazza Amendola",
+        "Viale Berengario",
+        "Piazza Arduino",
+        "Viale Eginardo"
+      ]
+    },
+    {
+      "id": 171,
       "nome": "Sire Raul - S. Centrale",
       "vie": [
         "Via Leon Cavallo",
@@ -4870,7 +5426,7 @@
       ]
     },
     {
-      "id": 154,
+      "id": 172,
       "nome": "Susa - P.za Castello",
       "vie": [
         "Piazza Susa",
@@ -4898,7 +5454,57 @@
       ]
     },
     {
-      "id": 155,
+      "id": 173,
+      "nome": "Tirana - Gessate",
+      "vie": [
+        "Via Giambellino",
+        "Largo Giambellino",
+        "Via Giambellino",
+        "Largo Balestra",
+        "Via Giambellino",
+        "Piazza Napoli",
+        "Via Solari",
+        "Piazza del Rosario",
+        "Via Solari",
+        "Via Ghisleri",
+        "Via Ausonio",
+        "Dx Via S. Calocero",
+        "Dx Via Sapeto",
+        "Sx Corso Genova",
+        "Piazza Resistenza Partigiana",
+        "Via De Amicis",
+        "Via Molino delle Armi",
+        "Via Santa Sofia",
+        "Via Francesco Sforza",
+        "Via Visconti di Modrone",
+        "Via S. Damiano",
+        "Dx Corso Venezia",
+        "Piazza Oberdan",
+        "Corso Buenos Aires",
+        "Piazza Lima",
+        "Corso Buenos Aires",
+        "Piazza Argentina",
+        "Corso Buenos Aires",
+        "Piazza Loreto",
+        "Via Andrea Costa",
+        "Piazza Durante",
+        "Via Leoncavallo",
+        "Piazza Sire Raul",
+        "Via Palmanova",
+        "Cavalcavia Cascina Gobba",
+        "esco dal Comune di Milano",
+        "Imbocco la SS 11 Padana Superiore",
+        "Passo i Comuni di:",
+        "Vimodrone",
+        "Pioltello",
+        "Cernusco su Naviglio",
+        "Cassina de Pecchi",
+        "Gorgonzola",
+        "Gessate"
+      ]
+    },
+    {
+      "id": 174,
       "nome": "Tirana - Niguarda",
       "vie": [
         "Via Giambellino",
@@ -4938,7 +5544,7 @@
       ]
     },
     {
-      "id": 156,
+      "id": 175,
       "nome": "Treves - Arcimboldi",
       "vie": [
         "Via Solferino",
@@ -4951,7 +5557,7 @@
       ]
     },
     {
-      "id": 157,
+      "id": 176,
       "nome": "Treves - Malpensa",
       "vie": [
         "Via Palermo",
@@ -4972,7 +5578,7 @@
       ]
     },
     {
-      "id": 158,
+      "id": 177,
       "nome": "Treves - Monzino",
       "vie": [
         "Via Balzan",
@@ -5005,7 +5611,7 @@
       ]
     },
     {
-      "id": 159,
+      "id": 178,
       "nome": "Treves - S. Giuseppe",
       "vie": [
         "Via Solferino",
@@ -5024,7 +5630,7 @@
       ]
     },
     {
-      "id": 160,
+      "id": 179,
       "nome": "Tricolore - Abbiategrasso",
       "vie": [
         "Corso Monforte",
@@ -5046,7 +5652,7 @@
       ]
     },
     {
-      "id": 161,
+      "id": 180,
       "nome": "Tricolore - Duomo - Tricolore",
       "vie": [
         "Corso Monforte",
@@ -5086,7 +5692,32 @@
       ]
     },
     {
-      "id": 162,
+      "id": 181,
+      "nome": "Tripoli - 5 Giornate",
+      "vie": [
+        "Via Sardegna",
+        "Dx Via Luchino del Maino",
+        "Sx Via Costanza",
+        "Via Egadi",
+        "Via Lipari",
+        "Piazza Vesuvio",
+        "Via Lipari",
+        "Piazza Aquileia",
+        "Dx Via Papiniano",
+        "Sx Ausonnio",
+        "Via Calogero",
+        "Dx Via Sapeto",
+        "Sx Corso Genova",
+        "Piazza Resistenza Partigiana",
+        "Via de Amicis",
+        "Via Molino delle Armi",
+        "Via Santa Sofia",
+        "Via Francesco Sforza",
+        "Dx Corso di Porta Vittoria"
+      ]
+    },
+    {
+      "id": 182,
       "nome": "Turr - Centrale",
       "vie": [
         "Via Gattamelata",
@@ -5114,7 +5745,7 @@
       ]
     },
     {
-      "id": 163,
+      "id": 183,
       "nome": "Udine - Centrale",
       "vie": [
         "Via Pordenone",
@@ -5134,7 +5765,30 @@
       ]
     },
     {
-      "id": 164,
+      "id": 184,
+      "nome": "Udine - Forlanini",
+      "vie": [
+        "Via Pordedone",
+        "Largo Gemito",
+        "Via Casoretto",
+        "Via San materno",
+        "Via Casoretto",
+        "Piazza Durante",
+        "Via Teodosio",
+        "Via Ponzio",
+        "Piazza Gorini",
+        "Via Aselli",
+        "Piazza Fusina",
+        "Via Lomellina",
+        "Sx viale Corsica",
+        "Largo Rodari",
+        "Viale Corsica",
+        "Passo Sotto i 3 Ponti",
+        "Viale Forlanini"
+      ]
+    },
+    {
+      "id": 185,
       "nome": "Udine - Linate",
       "vie": [
         "Via Ronchi",
@@ -5152,7 +5806,7 @@
   ],
   "Porte": [
     {
-      "id": 165,
+      "id": 186,
       "nome": "Carlo Magno - Linate",
       "vie": [
         "Via Arona",
@@ -5201,7 +5855,7 @@
       ]
     },
     {
-      "id": 166,
+      "id": 187,
       "nome": "Ludovica - P.za Carbonari",
       "vie": [
         "Corso Italia",
@@ -5232,7 +5886,28 @@
   ],
   "Stazioni": [
     {
-      "id": 167,
+      "id": 188,
+      "nome": "Alfieri - Garibaldi",
+      "vie": [
+        "Via Varre",
+        "Sx Mercantini",
+        "Piazza Bausan",
+        "Via Imbriani",
+        "Piazza Nigra",
+        "Viale Jenner",
+        "Dx Via Resegone",
+        "Sx Via Lancetti",
+        "Via Stelvio",
+        "Dx Via Valtellina",
+        "Cavalcavia della sorgente",
+        "Sx Via Ferrari",
+        "Sotto Cavalcavia Bussa",
+        "Via Don Sturzo",
+        "Piazza Freud"
+      ]
+    },
+    {
+      "id": 189,
       "nome": "Alfieri - S. Carlo",
       "vie": [
         "Via Varrè",
@@ -5257,7 +5932,7 @@
       ]
     },
     {
-      "id": 168,
+      "id": 190,
       "nome": "Bisceglie - 5 Giornate",
       "vie": [
         "Via Zurigo",
@@ -5300,7 +5975,7 @@
       ]
     },
     {
-      "id": 169,
+      "id": 191,
       "nome": "Bottini - Garibaldi",
       "vie": [
         "Via Pacini",
@@ -5322,7 +5997,7 @@
       ]
     },
     {
-      "id": 170,
+      "id": 192,
       "nome": "Bottini - S. Raffaele",
       "vie": [
         "Via Salieri",
@@ -5342,7 +6017,7 @@
       ]
     },
     {
-      "id": 171,
+      "id": 193,
       "nome": "Cadorna - Arcimboldi",
       "vie": [
         "Via Minghetti",
@@ -5371,7 +6046,7 @@
       ]
     },
     {
-      "id": 172,
+      "id": 194,
       "nome": "Cadorna - Centrale",
       "vie": [
         "Foro Bonaparte",
@@ -5393,7 +6068,7 @@
       ]
     },
     {
-      "id": 173,
+      "id": 195,
       "nome": "Cadorna - Freguglia",
       "vie": [
         "Via Carducci",
@@ -5410,7 +6085,7 @@
       ]
     },
     {
-      "id": 174,
+      "id": 196,
       "nome": "Cadorna - Musocco",
       "vie": [
         "Via Paleocapa",
@@ -5433,7 +6108,7 @@
       ]
     },
     {
-      "id": 175,
+      "id": 197,
       "nome": "Cadorna - Pinacoteca Brera",
       "vie": [
         "Foro Bonaparte",
@@ -5450,7 +6125,7 @@
       ]
     },
     {
-      "id": 176,
+      "id": 198,
       "nome": "Centrale - Abbiategrasso",
       "vie": [
         "Via Pisani",
@@ -5479,7 +6154,7 @@
       ]
     },
     {
-      "id": 177,
+      "id": 199,
       "nome": "Centrale - Arco della Pace",
       "vie": [
         "Via Pirelli (lascio a sx Piazza Enaudi)",
@@ -5498,7 +6173,7 @@
       ]
     },
     {
-      "id": 178,
+      "id": 200,
       "nome": "Centrale - Bottini",
       "vie": [
         "Via Pergolesi",
@@ -5516,7 +6191,7 @@
       ]
     },
     {
-      "id": 179,
+      "id": 201,
       "nome": "Centrale - Brera",
       "vie": [
         "Via Pisani",
@@ -5537,7 +6212,7 @@
       ]
     },
     {
-      "id": 180,
+      "id": 202,
       "nome": "Centrale - IEO",
       "vie": [
         "Piazza Duca d'Aosta",
@@ -5568,7 +6243,7 @@
       ]
     },
     {
-      "id": 181,
+      "id": 203,
       "nome": "Centrale - Istituto Tumori",
       "vie": [
         "Piazza Duca d'Aosta",
@@ -5592,7 +6267,7 @@
       ]
     },
     {
-      "id": 182,
+      "id": 204,
       "nome": "Centrale - L.go delle Culture",
       "vie": [
         "P.zza Duca d'Aosta",
@@ -5629,7 +6304,7 @@
       ]
     },
     {
-      "id": 183,
+      "id": 205,
       "nome": "Centrale - Loreto",
       "vie": [
         "Via Pergolesi",
@@ -5643,7 +6318,7 @@
       ]
     },
     {
-      "id": 184,
+      "id": 206,
       "nome": "Centrale - Niguarda",
       "vie": [
         "Via Galvani",
@@ -5658,7 +6333,7 @@
       ]
     },
     {
-      "id": 185,
+      "id": 207,
       "nome": "Centrale - Orio",
       "vie": [
         "Via Pergolesi",
@@ -5694,7 +6369,7 @@
       ]
     },
     {
-      "id": 186,
+      "id": 208,
       "nome": "Centrale - P.ta Genova",
       "vie": [
         "Via Pisani",
@@ -5719,7 +6394,7 @@
       ]
     },
     {
-      "id": 187,
+      "id": 209,
       "nome": "Centrale - P.zza Carlo Magno",
       "vie": [
         "P.zza Duca d'Aosta",
@@ -5744,7 +6419,7 @@
       ]
     },
     {
-      "id": 188,
+      "id": 210,
       "nome": "Centrale - Rogoredo",
       "vie": [
         "Piazza Duca d'Aosta",
@@ -5772,7 +6447,7 @@
       ]
     },
     {
-      "id": 189,
+      "id": 211,
       "nome": "Centrale - S. Siro",
       "vie": [
         "Piazza duca d'Aosta",
@@ -5800,7 +6475,7 @@
       ]
     },
     {
-      "id": 190,
+      "id": 212,
       "nome": "Garibalbi - Museo Scienza Tecnica",
       "vie": [
         "Piazza Sigmund Freud",
@@ -5840,7 +6515,7 @@
       ]
     },
     {
-      "id": 191,
+      "id": 213,
       "nome": "Garibaldi - Abbiategrasso",
       "vie": [
         "Via Don Sturzo",
@@ -5873,7 +6548,7 @@
       ]
     },
     {
-      "id": 192,
+      "id": 214,
       "nome": "Garibaldi - Baracca",
       "vie": [
         "Don Luigi Sturzo",
@@ -5900,7 +6575,7 @@
       ]
     },
     {
-      "id": 193,
+      "id": 215,
       "nome": "Garibaldi - Bovisa",
       "vie": [
         "Piazza Freud",
@@ -5926,7 +6601,7 @@
       ]
     },
     {
-      "id": 194,
+      "id": 216,
       "nome": "Garibaldi - Domodossola",
       "vie": [
         "Don Sturzo",
@@ -5945,7 +6620,7 @@
       ]
     },
     {
-      "id": 196,
+      "id": 218,
       "nome": "Garibaldi - Duomo",
       "vie": [
         "Via Don Sturzo",
@@ -5973,7 +6648,7 @@
       ]
     },
     {
-      "id": 195,
+      "id": 217,
       "nome": "Garibaldi - Duomo  Ver 2",
       "vie": [
         "Via Don Sturzo",
@@ -5995,7 +6670,7 @@
       ]
     },
     {
-      "id": 197,
+      "id": 219,
       "nome": "Garibaldi - IEO",
       "vie": [
         "Don Sturzo",
@@ -6033,7 +6708,7 @@
       ]
     },
     {
-      "id": 198,
+      "id": 220,
       "nome": "Garibaldi - Istituto Tumori",
       "vie": [
         "Via Don Luigi Sturzo",
@@ -6066,7 +6741,7 @@
       ]
     },
     {
-      "id": 199,
+      "id": 221,
       "nome": "Garibaldi - L.go delle Culture",
       "vie": [
         "Via Don Sturzo",
@@ -6096,7 +6771,7 @@
       ]
     },
     {
-      "id": 200,
+      "id": 222,
       "nome": "Garibaldi - Perrucchetti",
       "vie": [
         "Piazza Sigmund Freud",
@@ -6128,7 +6803,7 @@
       ]
     },
     {
-      "id": 201,
+      "id": 223,
       "nome": "Garibaldi - Rogoredo",
       "vie": [
         "Via Don Luigi Sturzo",
@@ -6167,7 +6842,7 @@
       ]
     },
     {
-      "id": 202,
+      "id": 224,
       "nome": "Genova - Centrale",
       "vie": [
         "Corso Colombo",
@@ -6197,7 +6872,7 @@
       ]
     },
     {
-      "id": 203,
+      "id": 225,
       "nome": "Genova - Malpensa",
       "vie": [
         "Corso Colombo",
@@ -6226,7 +6901,7 @@
       ]
     },
     {
-      "id": 204,
+      "id": 226,
       "nome": "Genova - S.Paolo",
       "vie": [
         "Via Valenza",
@@ -6242,7 +6917,7 @@
       ]
     },
     {
-      "id": 205,
+      "id": 227,
       "nome": "Lambrate x P.za Affari",
       "vie": [
         "Via Valvassoni Peroni",
@@ -6281,7 +6956,7 @@
       ]
     },
     {
-      "id": 206,
+      "id": 228,
       "nome": "Lampugnano - Centrale",
       "vie": [
         "Via Natta",
@@ -6313,7 +6988,7 @@
       ]
     },
     {
-      "id": 207,
+      "id": 229,
       "nome": "Lampugnano - Negrelli",
       "vie": [
         "Via Natta",
@@ -6339,7 +7014,7 @@
       ]
     },
     {
-      "id": 208,
+      "id": 230,
       "nome": "Motorizzazione - Gaetano Pini",
       "vie": [
         "Via Cilea",
@@ -6377,7 +7052,7 @@
       ]
     },
     {
-      "id": 209,
+      "id": 231,
       "nome": "Questura - Mororizzazione",
       "vie": [
         "Via Fatebenefratelli",
@@ -6413,7 +7088,7 @@
       ]
     },
     {
-      "id": 210,
+      "id": 232,
       "nome": "Rogoredo -  P.za Alfieri  (BOVISA)",
       "vie": [
         "Via Cassinis",
@@ -6467,7 +7142,7 @@
       ]
     },
     {
-      "id": 211,
+      "id": 233,
       "nome": "Rogoredo - Lampugnano Ver 1",
       "vie": [
         "Via Cassinis",
@@ -6510,7 +7185,7 @@
       ]
     },
     {
-      "id": 212,
+      "id": 234,
       "nome": "Rogoredo - Lampugnano Ver 2",
       "vie": [
         "Via Cassinis",
@@ -6557,7 +7232,7 @@
       ]
     },
     {
-      "id": 213,
+      "id": 235,
       "nome": "Rogoredo - Rho Fiera",
       "vie": [
         "Via Cassinis",
@@ -6602,7 +7277,7 @@
       ]
     },
     {
-      "id": 214,
+      "id": 236,
       "nome": "Rogoredo - Tricolore",
       "vie": [
         "Via Cassinis",
@@ -6626,7 +7301,7 @@
       ]
     },
     {
-      "id": 215,
+      "id": 237,
       "nome": "Tirana - Malpensa",
       "vie": [
         "Via Inganni",
