@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Strade e Percorsi su OSM</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100vh;
+        }
+        #addPointButton, #deletePointsButton, #addRouteButton {
+            position: absolute;
+            right: 10px;
+            z-index: 1000;
+            padding: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        #addPointButton { top: 10px; }
+        #deletePointsButton { top: 40px; }
+        #addRouteButton { top: 70px; }
+        #routesBox {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            font-size: 12px;
+            max-height: 80vh;
+            overflow-y: auto;
+            min-width: 200px;
+        }
+        .route-item {
+            cursor: pointer;
+            padding: 5px;
+            margin: 2px 0;
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+        .route-item:hover {
+            background: #ddd;
+        }
+        .route-vie {
+            margin-left: 10px;
+            font-size: 11px;
+        }
+        .custom-point {
+            background-color: white;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid black;
+        }
+        .leaflet-popup-content {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 10px;
+            margin: 2px;
+            padding: 0;
+        }
+        .leaflet-popup-content input {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 10px;
+            border: none;
+            outline: none;
+            width: auto;
+            max-width: 100px;
+        }
+        .leaflet-popup-content-wrapper {
+            padding: 2px;
+        }
+        .leaflet-popup-tip-container {
+            margin-top: -1px;
+        }
+    </style>
+</head>
+<body>
+    <button id="addPointButton">1 - Aggiungi strada</button>
+    <button id="deletePointsButton">2 - Cancella punti</button>
+    <button id="addRouteButton">3 - Aggiungi percorso</button>
+    <div id="map"></div>
+    <div id="routesBox"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Inizializza la mappa Leaflet con OpenStreetMap
+        const map = L.map('map').setView([45.4642, 9.1900], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Carica dati da localStorage
+        let points = JSON.parse(localStorage.getItem('points')) || [];
+        let routes = JSON.parse(localStorage.getItem('routes')) || [];
+        let markers = [];
+        let routeLayers = [];
+        let selectedRoute = null;
+
+        // Funzione per creare il marker bianco
+        function createPointIcon() {
+            return L.divIcon({
+                className: 'custom-point-marker',
+                html: '<div class="custom-point"></div>',
+                iconSize: [10, 10],
+                iconAnchor: [5, 5],
+                popupAnchor: [0, -8]
+            });
+        }
+
+        // Funzione per aggiungere un punto
+        function addPoint(lat, lon, name) {
+            const marker = L.marker([lat, lon], {
+                icon: createPointIcon(),
+                draggable: true
+            });
+            marker.bindPopup(createEditablePopupContent(name), {
+                offset: [0, -8],
+                closeButton: false,
+                className: 'small-popup',
+                autoPan: false,
+                minWidth: 30
+            }).addTo(map); // Sempre visibile
+            markers.push(marker);
+            points.push({ lat, lon, name });
+            localStorage.setItem('points', JSON.stringify(points));
+
+            // Gestione modifica nome
+            marker.on('popupopen', () => {
+                const input = marker.getPopup().getElement().querySelector('input');
+                input.focus();
+                input.addEventListener('change', () => {
+                    const newName = input.value.trim();
+                    if (newName) {
+                        const index = points.findIndex(p => p.lat === lat && p.lon === lon);
+                        if (index !== -1) {
+                            points[index].name = newName;
+                            localStorage.setItem('points', JSON.stringify(points));
+                            updateRoutesBox();
+                            routes.forEach(route => {
+                                route.points.forEach(p => {
+                                    if (p.lat === lat && p.lon === lon) {
+                                        p.name = newName;
+                                    }
+                                });
+                            });
+                            localStorage.setItem('routes', JSON.stringify(routes));
+                        }
+                    } else {
+                        input.value = name;
+                    }
+                });
+            });
+
+            // Gestione trascinamento
+            marker.on('dragend', () => {
+                const newLatLng = marker.getLatLng();
+                const index = points.findIndex(p => p.lat === lat && p.lon === lon);
+                if (index !== -1) {
+                    points[index].lat = newLatLng.lat;
+                    points[index].lon = newLatLng.lng;
+                    localStorage.setItem('points', JSON.stringify(points));
+                    routes.forEach(route => {
+                        route.points.forEach(p => {
+                            if (p.lat === lat && p.lon === lon) {
+                                p.lat = newLatLng.lat;
+                                p.lon = newLatLng.lng;
+                            }
+                        });
+                    });
+                    localStorage.setItem('routes', JSON.stringify(routes));
+                    updateRouteLayers();
+                    showSelectedRoute();
+                }
+            });
+        }
+
+        // Funzione per creare il contenuto editabile del popup
+        function createEditablePopupContent(name) {
+            return `<input type="text" value="${name}" />`;
+        }
+
+        // Funzione per ottenere il percorso (linee rette)
+        function getRoutePath(points) {
+            return points.map(p => [p.lat, p.lon]);
+        }
+
+        // Funzione per aggiornare le linee dei percorsi
+        function updateRouteLayers() {
+            routeLayers.forEach(layer => map.removeLayer(layer));
+            routeLayers = [];
+            for (const route of routes) {
+                const latlngs = getRoutePath(route.points);
+                const polyline = L.polyline(latlngs, {
+                    color: 'purple',
+                    weight: 3,
+                    opacity: selectedRoute && selectedRoute.name === route.name ? 1 : 0.3
+                });
+                routeLayers.push(polyline);
+                if (selectedRoute && selectedRoute.name === route.name) {
+                    polyline.addTo(map).setStyle({ color: '#4B0082', opacity: 1 });
+                }
+            }
+        }
+
+        // Funzione per gestire la visibilità delle linee
+        function showSelectedRoute() {
+            // Mantieni tutti i marker visibili
+            markers.forEach(marker => {
+                if (!marker._map) {
+                    marker.addTo(map);
+                }
+            });
+            // Mostra solo la linea del percorso selezionato
+            routeLayers.forEach((layer, index) => {
+                map.removeLayer(layer);
+                if (selectedRoute && selectedRoute.name === routes[index].name) {
+                    layer.addTo(map).setStyle({ color: '#4B0082', opacity: 1 });
+                }
+            });
+        }
+
+        // Funzione per aggiornare l'elenco dei percorsi
+        function updateRoutesBox() {
+            const routesBox = document.getElementById('routesBox');
+            routesBox.innerHTML = '<strong>Percorsi:</strong><br>';
+            if (routes.length === 0) {
+                routesBox.innerHTML += '<p>Nessun percorso.</p>';
+                return;
+            }
+            routes.forEach((route, index) => {
+                const div = document.createElement('div');
+                div.className = 'route-item';
+                div.textContent = route.name;
+                const vieList = document.createElement('div');
+                vieList.className = 'route-vie';
+                vieList.style.display = 'none';
+                route.points.forEach(point => {
+                    const vieItem = document.createElement('div');
+                    vieItem.textContent = point.name;
+                    vieList.appendChild(vieItem);
+                });
+                div.appendChild(vieList);
+                div.addEventListener('click', () => {
+                    // Toggle elenco vie
+                    vieList.style.display = vieList.style.display === 'none' ? 'block' : 'none';
+                    // Aggiorna percorso selezionato
+                    selectedRoute = selectedRoute && selectedRoute.name === route.name ? null : route;
+                    updateRouteLayers();
+                    showSelectedRoute();
+                    // Apri popup dei punti del percorso
+                    markers.forEach(marker => {
+                        marker.closePopup();
+                        if (selectedRoute && selectedRoute.points.some(p => p.lat === marker.getLatLng().lat && p.lon === marker.getLatLng().lng)) {
+                            marker.openPopup();
+                        }
+                    });
+                });
+                routesBox.appendChild(div);
+            });
+        }
+
+        // Carica punti esistenti
+        points.forEach(point => {
+            addPoint(point.lat, point.lon, point.name);
+        });
+
+        // Inizializza le linee dei percorsi esistenti
+        updateRouteLayers();
+        showSelectedRoute();
+
+        // Gestione aggiunta punto
+        let addingPoint = false;
+        document.getElementById('addPointButton').addEventListener('click', () => {
+            if (!addingPoint) {
+                addingPoint = true;
+                document.getElementById('addPointButton').textContent = 'Clicca sulla mappa';
+                const name = prompt('Inserisci il nome della via:');
+                if (name && name.trim()) {
+                    map.getContainer().style.cursor = 'crosshair';
+                    map.once('click', (e) => {
+                        const { lat, lng } = e.latlng;
+                        addPoint(lat, lng, name.trim());
+                        addingPoint = false;
+                        document.getElementById('addPointButton').textContent = '1 - Aggiungi strada';
+                        map.getContainer().style.cursor = '';
+                    });
+                } else {
+                    alert('Inserisci un nome valido per la via.');
+                    addingPoint = false;
+                    document.getElementById('addPointButton').textContent = '1 - Aggiungi strada';
+                }
+            }
+        });
+
+        // Gestione cancellazione punti
+        let deletingPoints = false;
+        let selectedPoints = [];
+        document.getElementById('deletePointsButton').addEventListener('click', () => {
+            if (!deletingPoints) {
+                deletingPoints = true;
+                selectedPoints = [];
+                document.getElementById('deletePointsButton').textContent = 'Seleziona punti';
+                map.getContainer().style.cursor = 'pointer';
+                markers.forEach(marker => {
+                    marker.on('click', onMarkerClickForDelete);
+                });
+
+                // Pulsante per confermare cancellazione
+                const confirmButton = document.createElement('button');
+                confirmButton.textContent = 'Conferma cancellazione';
+                confirmButton.style.position = 'absolute';
+                confirmButton.style.top = '100px';
+                confirmButton.style.right = '10px';
+                confirmButton.style.zIndex = '1000';
+                confirmButton.style.padding = '8px';
+                confirmButton.style.fontSize = '12px';
+                document.body.appendChild(confirmButton);
+
+                confirmButton.addEventListener('click', () => {
+                    // Rimuovi i marker selezionati
+                    selectedPoints.forEach(marker => {
+                        map.removeLayer(marker);
+                        const index = markers.indexOf(marker);
+                        if (index !== -1) {
+                            markers.splice(index, 1);
+                            points.splice(index, 1);
+                        }
+                    });
+                    // Rimuovi i percorsi che contengono i punti cancellati
+                    routes = routes.filter(route => 
+                        route.points.every(p => points.some(point => point.lat === p.lat && point.lon === p.lon))
+                    );
+                    localStorage.setItem('points', JSON.stringify(points));
+                    localStorage.setItem('routes', JSON.stringify(routes));
+                    updateRouteLayers();
+                    showSelectedRoute();
+                    updateRoutesBox();
+                    resetDeleteMode(confirmButton);
+                });
+            }
+        });
+
+        // Funzione per gestire il clic sui marker in modalità cancellazione
+        function onMarkerClickForDelete(e) {
+            const marker = e.target;
+            if (!selectedPoints.includes(marker)) {
+                selectedPoints.push(marker);
+                marker.getElement().style.opacity = '0.5';
+            } else {
+                selectedPoints = selectedPoints.filter(m => m !== marker);
+                marker.getElement().style.opacity = '1';
+            }
+        }
+
+        // Funzione per ripristinare la modalità cancellazione
+        function resetDeleteMode(confirmButton) {
+            deletingPoints = false;
+            document.getElementById('deletePointsButton').textContent = '2 - Cancella punti';
+            map.getContainer().style.cursor = '';
+            markers.forEach(marker => {
+                marker.off('click', onMarkerClickForDelete);
+                if (marker.getElement()) {
+                    marker.getElement().style.opacity = '1';
+                }
+            });
+            document.body.removeChild(confirmButton);
+            selectedPoints = [];
+        }
+
+        // Gestione aggiunta percorso
+        let addingRoute = false;
+        let routePoints = [];
+        let previewLayer = null;
+        document.getElementById('addRouteButton').addEventListener('click', () => {
+            if (!addingRoute) {
+                addingRoute = true;
+                routePoints = [];
+                document.getElementById('addRouteButton').textContent = 'Seleziona punti';
+                map.getContainer().style.cursor = 'pointer';
+                markers.forEach(marker => {
+                    marker.addTo(map);
+                    marker.on('click', onMarkerClickForRoute);
+                });
+
+                // Pulsante per terminare il percorso
+                const finishButton = document.createElement('button');
+                finishButton.textContent = 'Fine percorso';
+                finishButton.style.position = 'absolute';
+                finishButton.style.top = '100px';
+                finishButton.style.right = '10px';
+                finishButton.style.zIndex = '1000';
+                finishButton.style.padding = '8px';
+                finishButton.style.fontSize = '12px';
+                document.body.appendChild(finishButton);
+
+                finishButton.addEventListener('click', () => {
+                    if (routePoints.length >= 2) {
+                        const routeName = prompt('Inserisci il nome del percorso:') || `Percorso ${routes.length + 1}`;
+                        const route = {
+                            name: routeName,
+                            points: routePoints
+                        };
+                        routes.push(route);
+                        localStorage.setItem('routes', JSON.stringify(routes));
+                        updateRoutesBox();
+                        selectedRoute = route;
+                        updateRouteLayers();
+                        showSelectedRoute();
+                    } else {
+                        alert('Seleziona almeno 2 punti per il percorso.');
+                    }
+                    resetRouteMode(finishButton);
+                });
+            }
+        });
+
+        // Funzione per gestire il clic sui marker in modalità percorso
+        function onMarkerClickForRoute(e) {
+            const marker = e.target;
+            const point = points.find(p => p.lat === marker.getLatLng().lat && p.lon === marker.getLatLng().lng);
+            if (point && !routePoints.includes(point)) {
+                routePoints.push(point);
+                marker.openPopup();
+                // Aggiorna anteprima
+                if (previewLayer) {
+                    map.removeLayer(previewLayer);
+                }
+                const latlngs = getRoutePath(routePoints);
+                previewLayer = L.polyline(latlngs, {
+                    color: '#4B0082',
+                    weight: 3,
+                    opacity: 1
+                }).addTo(map);
+            }
+        }
+
+        // Funzione per ripristinare la modalità percorso
+        function resetRouteMode(finishButton) {
+            addingRoute = false;
+            document.getElementById('addRouteButton').textContent = '3 - Aggiungi percorso';
+            map.getContainer().style.cursor = '';
+            markers.forEach(marker => {
+                marker.off('click', onMarkerClickForRoute);
+            });
+            if (previewLayer) {
+                map.removeLayer(previewLayer);
+                previewLayer = null;
+            }
+            document.body.removeChild(finishButton);
+            routePoints = [];
+            showSelectedRoute();
+        }
+    </script>
+</body>
+</html>

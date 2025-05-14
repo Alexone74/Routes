@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mappa di Milano con Piazze e Percorsi TAM</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        #gpx-list {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        #gpx-list h2 {
+            font-size: 1em;
+            margin: 0 0 5px;
+        }
+        #upload-button {
+            padding: 5px 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin: 5px 0;
+        }
+        #upload-button:hover {
+            background: #45a049;
+        }
+        .dropdown {
+            display: inline-block;
+        }
+        .dropdown-button {
+            padding: 5px 10px;
+            background: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .dropdown-button:hover {
+            background: #555;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: #f9f9f9;
+            min-width: 150px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 2;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .dropdown-content.show {
+            display: block;
+        }
+        .dropdown-content label {
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .dropdown-content label:hover {
+            background: #ddd;
+        }
+        .dropdown-content input[type="checkbox"] {
+            margin-right: 5px;
+            transform: scale(0.8);
+        }
+        .popup-content label {
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            font-size: 0.9em;
+        }
+        .popup-content input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .start-marker {
+            width: 24px;
+            height: 24px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transform: translate(-50%, -50%);
+        }
+        .end-marker {
+            width: 20px;
+            height: 20px;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transform: translate(-50%, -50%);
+        }
+        .square-marker {
+            background: black;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        .popup-content ul {
+            margin: 0;
+            padding: 0 0 0 15px;
+        }
+        #track-tooltip {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.9em;
+            border-radius: 4px;
+            z-index: 1000;
+            display: none;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map">
+        <div id="track-tooltip"></div>
+        <div id="gpx-list">
+            <h2>PERCORSI TAM</h2>
+            <div class="dropdown">
+                <button class="dropdown-button">Tracce</button>
+                <div class="dropdown-content" id="gpx-tracks"></div>
+            </div>
+            <input type="file" id="gpx-upload" accept=".gpx" style="display: none;">
+            <button id="upload-button">Carica GPX</button>
+        </div>
+    </div>
+
+    <script>
+        const map = L.map('map').setView([45.4642, 9.1900], 12);
+        // Layer di mappa OpenStreetMap (standard, usato da OSMAnd)
+        const mainLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 19,
+            tileSize: 256
+        }).addTo(map);
+
+        const colors = ['#8B0000', '#00008B', '#006400', '#4B0082', '#8B4513'];
+        let colorIndex = 0;
+        function getNextColor() {
+            const color = colors[colorIndex % colors.length];
+            colorIndex++;
+            return color;
+        }
+
+        // Elenco delle piazze di Milano
+        const squares = [
+    {
+        "name": "Piazza Duomo",
+        "lat": 45.464373,
+        "lon": 9.188642,
+        "streets": ["Via Giuseppe Mazzini", "Via Guglielmo Marconi", "Via Palazzo Reale", "Via dell'Arcivescovado", "Corso Vittorio Emanuele II", "Via Santa Radegonda", "Via San Raffaele", "Via Ugo Foscolo", "Galleria Vittorio Emanuele II", "Via Silvio Pellico", "Via Giuseppe Mengoni", "Via dei Mercanti", "Via Orefici", "Via Torino"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Quattro Novembre",
+        "lat": 45.486515,
+        "lon": 9.203141,
+        "streets": ["Piazza Duca d'Aosta", "Via Giovanni Battista Sammartini", "Via Fabio Filzi", "Via Tarra"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Cinque Giornate",
+        "lat": 45.462270,
+        "lon": 9.207145,
+        "streets": ["Viale Regina Margherita", "Viale Montenero", "Corso Ventidue Marzo", "Viale Premuda", "Viale Bianca Maria", "Corso di Porta Vittoria"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Sei Febbraio",
+        "lat": 45.478263,
+        "lon": 9.159834,
+        "streets": ["Via Vincenzo Monti", "Via Ferruccio Ferrucci", "Via Boezio", "Via Cassiodoro"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Otto Novembre 1917",
+        "lat": 45.474736,
+        "lon": 9.211078,
+        "streets": ["Via Carlo Pisacane", "Via Rosolino Pilo", "Viale Regina Giovanna", "Via Achille Maiocchi", "Via Bernardino Ramazzini", "Via Paolo Frisi", "Via Lambro"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Ventiquattro Maggio",
+        "lat": 45.452592,
+        "lon": 9.180684,
+        "streets": ["Corso San Gottardo", "Via Trincea delle Frasche", "Viale Col di Lana", "Viale Gian Galeazzo", "Via Sambuco", "Corso di Porta Ticinese", "Viale Gabriele d'Annunzio", "Viale Gorizia", "Via Scoglio di Quarto", "Corso Luigi Manusardi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Venticinque Aprile",
+        "lat": 45.480544,
+        "lon": 9.186876,
+        "streets": ["Corso Garibaldi", "Bastioni di Porta Nuova", "Viale Montegrappa", "Corso Como", "Viale Pasubio", "Viale Francesco Crispi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Abbiategrasso",
+        "lat": 45.430056,
+        "lon": 9.178648,
+        "streets": ["Viale dei Missaglia", "Via Giuseppe Palanti", "Via Medeghino", "Viale Lodovico Montegani", "Via San Domenico Savio", "Via Santa Teresa", "Via Avancinio Avancini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Accursio",
+        "lat": 45.492614,
+        "lon": 9.146605,
+        "streets": ["Via Achille Papa", "Via Bizzozero", "Via Marco Ulpio Traiano", "Viale Certosa", "Via Pietro Gassendi", "Via Sidney Sonnino", "Via Fridtjof Nansen", "Via Dario Niccodemi", "Viale Carlo Espinasse", "Via Gallarate"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Agrippa",
+        "lat": 45.433231,
+        "lon": 9.183807,
+        "streets": ["Via Roberto Bellarmino", "Via Felice Perussia", "Via Lorenzo Valla", "Via Volvinio", "Via Neera", "Via Medeghino"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale ai Laghi",
+        "lat": 45.499505,
+        "lon": 9.130772,
+        "streets": ["Via Ghisallo", "Viale Certosa", "Via Montefeltro"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Alfieri Emilio",
+        "lat": 45.502774,
+        "lon": 9.159843,
+        "streets": ["Via Bellagio", "Via Giovanni Battista Varè", "Via Giuseppe Candiani", "Via Don Giuseppe Andreoli", "Via Bovisasca"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Amendola Giovanni",
+        "lat": 45.473495,
+        "lon": 9.151380,
+        "streets": ["Via Monterosa", "Viale Ezio", "Via Benedetto Brin", "Viale Berengario", "Via Monte Bianco", "Via Domenichino", "Via Gaetano Previati"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Angilberto II",
+        "lat": 45.436945,
+        "lon": 9.217142,
+        "streets": ["Via San Dionigi", "Via Ravenna", "Via Comacchio", "Via Bessarione", "Via Arcivescovo Romilli", "Via Marco d'Agrate", "Via Pismonte"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Appio Claudio",
+        "lat": 45.492166,
+        "lon": 9.194474,
+        "streets": ["Via Torquato Taramelli", "Via Abbedesse", "Viale Nazario Sauro"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Aquileia",
+        "lat": 45.461275,
+        "lon": 9.163679,
+        "streets": ["Via Caravaggio", "Viale Coni Zugna", "Viale Papiniano", "Corso di Porta Vercellina", "Via San Michele del Carso", "Via Paolo Giovio", "Via Lipari", "Via Altino"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Arcole",
+        "lat": 45.449836,
+        "lon": 9.172448,
+        "streets": ["Via Giovanni Segantini", "Via Magolfa", "Via Filippo Argelati", "Via Pasquale Paoli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Arduino",
+        "lat": 45.477521,
+        "lon": 9.150892,
+        "streets": ["Viale Berengario", "Viale Eginardo", "Via Francesco Albani", "Via Desiderio da Settignano", "Via Novegno"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Argentina",
+        "lat": 45.484102,
+        "lon": 9.214683,
+        "streets": ["Via Claudio Monteverdi", "Via Niccolò Paganini", "Via Antonio Stradivari", "Via Giuseppe Pecchio", "Corso Buenos Aires", "Via Giovanni Pierluigi da Palestrina", "Via Saverio Mercadante"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Ascoli Graziadio Isaia",
+        "lat": 45.473527,
+        "lon": 9.217824,
+        "streets": ["Via dei Mille", "Via Gian Battista Tiepolo", "Via Filippo Juvara", "Via Giovanni Pascoli", "Viale Abruzzi", "Via Antonio Stoppani", "Via degli Scipioni"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Aspromonte",
+        "lat": 45.483947,
+        "lon": 9.220231,
+        "streets": ["Via Garofalo", "Via Filippo Lippi", "Via Francesco Lomonaco", "Via Vallazze", "Via Giovanni Lulli", "Via Antonio Sacchini", "Via Giovanni Ricordi", "Via Giuseppe Pecchio"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Augusto",
+        "lat": 45.463465,
+        "lon": 9.197781,
+        "streets": ["Corso di Porta Vittoria", "Via Cesare Battisti", "Via Marziale", "Via Cerva", "Via Durini", "Via Felice Cavallotti", "Via Verziere", "Via della Signora"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Axum",
+        "lat": 45.475799,
+        "lon": 9.123807,
+        "streets": ["Via Don Carlo Gnocchi", "Via Alfonso Capecelatro", "Via dei Rospigliosi", "Via dei Piccolomini", "Via Dessiè"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Bacone",
+        "lat": 45.480714,
+        "lon": 9.214731,
+        "streets": ["Via Bartolomeo Eustachi", "Via Rodolfo Farneti", "Via Paracelso", "Via Carlo Matteucci", "Via Claudio Monteverdi", "Via Gaspare Spontini", "Via Amilcare Ponchielli", "Via Federico Ozanam", "Via Giovanni Battista Morgagni"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Baiamonti Antonio",
+        "lat": 45.482069,
+        "lon": 9.181792,
+        "streets": ["Viale Montello", "Via Alessandro Volta", "Viale Pasubio", "Via Carlo Farini", "Via Ceresio", "Via Paolo Sarpi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Bande Nere Giovanni dalle",
+        "lat": 45.461311,
+        "lon": 9.136953,
+        "streets": ["Via Bartolomeo d'Alviano", "Via Caterina da Forlì", "Via Sofonisba Anguissola", "Viale Pisa", "Via Vincenzo Giordano Orsini", "Viale Legione Romane", "Viale San Gimignano"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bandiera Fratelli",
+        "lat": 45.470776,
+        "lon": 9.210674,
+        "streets": ["Via Carlo Pisacane", "Via Gustavo Modena", "Via Carlo Poerio", "Via Felice Bellotti"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Baracca Francesco",
+        "lat": 45.466137,
+        "lon": 9.165373,
+        "streets": ["Viale San Michele del Carso", "Corso di Porta Vercellina", "Corso Magenta", "Via Enrico Toti", "Via Ludovico Ariosto", "Corso Vercelli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bausan Giovanni",
+        "lat": 45.502292,
+        "lon": 9.165345,
+        "streets": ["Via Massara de Capitani", "Via degli Imbriani", "Via Filippo Baldinucci", "Via Angelo Brofferio", "Via Luigi Mercantini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bazzi Carlo",
+        "lat": 45.456725,
+        "lon": 9.161845,
+        "streets": ["Via Bergognone", "Via Valparaiso", "Via Caravaggio", "Via California", "Via Lanino", "Via Cola di Rienzo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Belfanti Serafino",
+        "lat": 45.443857,
+        "lon": 9.172740,
+        "streets": ["Via Spezia", "Viale Liguria", "Via Giovanni Segantini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bernini Gian Lorenzo",
+        "lat": 45.478979,
+        "lon": 9.221383,
+        "streets": ["Via Pinturicchio", "Via Fucini", "Via Enrico Noe", "Via Filippino Lippi", "Via Sansovino", "Via Noe"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bettini Lionello",
+        "lat": 45.462874,
+        "lon": 9.133346,
+        "streets": ["Via Cavalieri", "Via Vincenzo Giordano Orsini", "Via delle Forze Armate", "Via Tonezza"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Biancamano",
+        "lat": 45.478389,
+        "lon": 9.181329,
+        "streets": ["Piazza Lega Lombarda", "Via della Moscova", "Bastioni di Porta Volta", "Viale Montello", "Via Bramante", "Via Carlo Maria Maggi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Bibbiena",
+        "lat": 45.445262,
+        "lon": 9.184837,
+        "streets": ["Via Fedro", "Viale Tibaldi", "Via Giambologna"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Boccioni Umberto",
+        "lat": 45.511681,
+        "lon": 9.128254,
+        "streets": ["Via Antonio Mambretti", "Via Antonio Aldini", "Via Maria Drago", "Via Gian Battista Grassi", "Via Tommaso Campanella"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bolivar Simone",
+        "lat": 45.455165,
+        "lon": 9.152650,
+        "streets": ["Viale Misurata", "Via Sirte", "Via Vincenzo Foppa", "Via Romolo Gessi", "Via Lorenteggio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bologna",
+        "lat": 45.444310,
+        "lon": 9.224172,
+        "streets": ["Viale Lucania", "Via Sulmona", "Viale Puglie", "Viale Bacchiglione"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bonomelli Geremia",
+        "lat": 45.440918,
+        "lon": 9.213802,
+        "streets": ["Via Arcivescovo Romilli", "Via Mincio", "Viale Brenta", "Via Benaco", "新增字段请补充"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Bottini Enrico",
+        "lat": 45.484638,
+        "lon": 9.236102,
+        "streets": ["Via Carlo Valvassori Peroni", "Via Giovanni Battista Viotti", "Via Giuseppe Merzario", "Via Antonio Salieri", "Via Giovanni Pacini"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Brasilia",
+        "lat": 45.451782,
+        "lon": 9.135527,
+        "streets": ["Via Francesco Primaticcio", "Via dei Fiordalisi", "Via Antonio Panizzi", "Via San Gimignano"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Brescia",
+        "lat": 45.470849,
+        "lon": 9.144822,
+        "streets": ["Via Daniele Ranzoni", "Via Federico Faruffini", "Via Lorenzo di Credi", "Via Alessandro Magnasco", "Viale Murillo", "Via Carlo Dolci", "Via Varazze", "Via Osoppo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Buonarroti Michelangelo",
+        "lat": 45.470356,
+        "lon": 9.155410,
+        "streets": ["Via Michelangelo Buonarroti", "Via Giotto", "Via Tiziano", "Viale Monterosa", "Via Raffaello Sanzio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Buozzi Bruno",
+        "lat": 45.449545,
+        "lon": 9.206213,
+        "streets": ["Via Mantova", "Corso Lodi", "Via Lazzaro Papi", "Via Piacenza", "Via Adige"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Cadorna Luigi",
+        "lat": 45.468131,
+        "lon": 9.177175,
+        "streets": ["Via San Nicolao", "Foro Buonaparte", "Via Minghetti", "Via Paleocapa", "Via Giovanni Boccaccio", "Via Giosuè Carducci"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Caiazzo",
+        "lat": 45.485352,
+        "lon": 9.209748,
+        "streets": ["Via Franchino Gaffurio", "Via Andrea Doria", "Via Giulio e Corrado Venini", "Via Giovanni Battista Pergolesi", "Via Settembrini"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Cairoli",
+        "lat": 45.468336,
+        "lon": 9.182107,
+        "streets": ["Via Camperio", "Via Dante", "Via Pozzone", "Via Cusani", "Foro Buonaparte", "Via Luca Beltrami", "Largo Maria Callas"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Caneva Carlo",
+        "lat": 45.487702,
+        "lon": 9.161524,
+        "streets": ["Via Bullona", "Via Fauchè", "Via Principe Eugenio", "Via Tolentino", "Via Cenisio", "Via Ezio Bondi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Cantore Antonio",
+        "lat": 45.455974,
+        "lon": 9.173350,
+        "streets": ["Via Cristoforo Colombo", "Via Giuseppe Codara", "Via Gabriele d'Annunzio", "Via Cicco Simonetta", "Corso Genova", "Via Daniela Crespi", "Viale Papiniano", "Via Francesco Carchidio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Cappelli Michele",
+        "lat": 45.458656,
+        "lon": 9.217129,
+        "streets": ["Viale Umbre", "Via Costanza Arconati", "Via Monte Ortigara", "Via Augusto Anfossi", "Via Friuli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Carbonari",
+        "lat": 45.493783,
+        "lon": 9.200053,
+        "streets": ["Via Privata Gasparo da Salò", "Via della Maggiolina", "Viale Lunigiana", "Via Stresa", "Viale Evaristo Stefini", "Via Arnaldo Vassallo", "Via Achille Bizzoni", "Viale Marche", "Via Privato Erasmo Boschetti", "Via Ercole Oldofredi", "Viale Francesco Restelli", "Via Timavo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Carlo Magno",
+        "lat": 45.480915,
+        "lon": 9.156284,
+        "streets": ["Via Duilio", "Via Arona", "Via Gattamelata"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Carrara Francesco",
+        "lat": 45.437293,
+        "lon": 9.175534,
+        "streets": ["Via della Chiesa Rossa", "Via Giovanni da Cermenate", "Via Ascanio Sforza", "Cavalcavia Schiavone"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Caserta",
+        "lat": 45.501273,
+        "lon": 9.195810,
+        "streets": ["Via Veglia", "Via Ala", "Via Lussinpiccolo", "Via Trescore", "Via Taormina"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Castello",
+        "lat": 45.469089,
+        "lon": 9.181146,
+        "streets": ["Via Bettino Ricasoli", "Via Gianluca Beltrami", "Via Quintino Sella", "Via Giovanni Lanza", "Via Antonio Beretta", "Viale Gerolamo Gadio", "Via Stefano Jacini", "Via Marco Minghetti"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Cavour Camillo Benso",
+        "lat": 45.472750,
+        "lon": 9.195604,
+        "streets": ["Via Alessandro Manzoni", "Via Senato", "Via del Vecchio Politecnico", "Via Palestro", "Via Daniele Manin", "Via Filippo Turati", "Via Fatebenefratelli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Chiaradia Enrico",
+        "lat": 45.437239,
+        "lon": 9.198135,
+        "streets": ["Via Solaroli", "Via Antonio Pasinetti", "Via Gallura", "Via dei Fontanili", "Via Giacomo Antonini", "Via Cuore Immacolato di Maria"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Cimitero Monumentale del",
+        "lat": 45.484631,
+        "lon": 9.179927,
+        "streets": ["Via Ceresio", "Via Giuseppe Ferrari", "Via Carlo Farini", "Via Luigi IX", "Via Giulio Cesare Procaccini", "Piazza Compasso d’Oro", "Via Bramante", "Via Giovanni Battista Niccolini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Conciliazione della",
+        "lat": 45.467568,
+        "lon": 9.166442,
+        "streets": ["Via Enrico Toti", "Via Giovanni Boccaccio", "Via XX Settembre", "Via Giambattista Bazzoni", "Via Ludovico Ariosto", "Via Alberto da Giussano", "Via Giovanni Rasori"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Cordusio",
+        "lat": 45.465422,
+        "lon": 9.186407,
+        "streets": ["Via Cordusio", "Via Orefici", "Via dei Mercanti", "Via Tommaso Grossi", "Via Broletto", "Via Dante"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Corvetto",
+        "lat": 45.439970,
+        "lon": 9.224302,
+        "streets": ["Viale Enrico Martini", "Via Carlo Marochetti", "Via Francesco Martinengo", "Viale Lucania", "Corso Lodi", "Via Polesine"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Crivellone",
+        "lat": 45.472178,
+        "lon": 9.146664,
+        "streets": ["Via Lorenzo di Credi", "Via Carlo Ravizza", "Via Domenichino", "Via Giuseppe Pelizza da Volpedo", "Via Paris Bordone", "Via Spagnoletto", "Via Alessandro Magnasco"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Cuoco Vincenzo",
+        "lat": 45.451081,
+        "lon": 9.224104,
+        "streets": ["Viale Puglie", "Via Monte Cimone", "Via del Turchino", "Viale Molise", "Via Faà di Bruno", "Via Rodolfo Carabelli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Damiano Chiesa",
+        "lat": 45.484314,
+        "lon": 9.156121,
+        "streets": ["Via Alcuino", "Via Giovanni da Procida", "Via Emanuele Filiberto", "Via Ruggero di Lauria", "Via Marcantonio Colonna", "Via Bartolomeo Colleoni"],
+        "tracks": []
+    },
+    {
+        "name": "Largo d’Ancona Paolo",
+        "lat": 45.465991,
+        "lon": 9.175697,
+        "streets": ["Via Carducci", "Via Bernardino Buttinone", "Corso Magenta", "Via Vincenzo Monti"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Dalla Chiesa Carlo Alberto",
+        "lat": 45.463628,
+        "lon": 9.140190,
+        "streets": ["Via Desenzano", "Via Sofonisba Anguissola", "Via Fra Galgario", "Via delle Forze Armate"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Dateo",
+        "lat": 45.467976,
+        "lon": 9.216610,
+        "streets": ["Viale Piceno", "Corso Plebisciti", "Viale dei Mille", "Via Giulio Uberti", "Corso Indipendenza", "Via Carlo Poma"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza De Angeli Ernesto",
+        "lat": 45.466640,
+        "lon": 9.149972,
+        "streets": ["Via dei Martinitt", "Via Luigi Sacco", "Via Marghera", "Via Raffaello Sanzio", "Via Federico Faruffini", "Via Parmigianino", "Via Antonio Tolomeo Trivulzio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza del Rosario Santa Maria",
+        "lat": 45.455235,
+        "lon": 9.162823,
+        "streets": ["Via Bergognone Ambrogio da Fossano", "Via Andrea Solari"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza dell'Ateneo Nuovo",
+        "lat": 45.518157,
+        "lon": 9.214322,
+        "streets": ["Via dell'Innovazione", "Via Mario Fubini", "Via Stella Bianca", "Via degli Arcimboldi Bicocca"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza dell'Ospedale Maggiore",
+        "lat": 45.509164,
+        "lon": 9.189253,
+        "streets": ["Via Benefattori dell'Ospedale Maggiore", "Viale Ca' Granda", "Via Renato Donatelli", "Via Ausonio Zubiani"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza della Repubblica",
+        "lat": 45.479019,
+        "lon": 9.197556,
+        "streets": ["Via Filippo Turati", "Via Iginio Ugo Tarchetti", "Viale Città di Fiume", "Viale Vittorio Veneto", "Via Panfilo Castaldi", "Via Finocchiaro Aprile", "Via Raimondo Franchetti", "Viale Tunisia", "Via Vittor Pisani", "Via Ferdinando di Savoia", "Via Cartesio", "Via Marco Polo", "Viale Montesanto", "Via Giuseppe Marcora", "Via Giuseppe Parini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza della Scala",
+        "lat": 45.466925,
+        "lon": 9.190019,
+        "streets": ["Via Santa Margherita", "Galleria Vittorio Emanuele II", "Via Tommaso Marino", "Via Case Rotte", "Via Alessandro Manzoni", "Via Giuseppe Verdi", "Largo Antonio Ghiringhelli", "Via Filodrammatici"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Dergano",
+        "lat": 45.503154,
+        "lon": 9.176783,
+        "streets": ["Via Ignazio Ciaia", "Via Conte Verde", "Via Brivio", "Via Giuseppe Tartini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale di Porta Lodovica",
+        "lat": 45.452100,
+        "lon": 9.186348,
+        "streets": ["Via Pietro Teuliè", "Viale Bligny", "Via Beatrice d'Este", "Corso Italia", "Via Gerolamo Borgazzi", "Via Gian Galeazzo", "Viale Col di Lana", "Via Bainsizza"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Diaz Armando",
+        "lat": 45.462362,
+        "lon": 9.189980,
+        "streets": ["Via Maurizio Gonzaga", "Via Flavio Baracchini", "Via Rastrelli", "Via Guglielmo Marconi", "Via Gaetano Giardino"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Diocleziano",
+        "lat": 45.487634,
+        "lon": 9.166449,
+        "streets": ["Via Losanna", "Via San Galdino", "Via Gran San Bernardo", "Via Mac Mahon"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Duca d'Aosta",
+        "lat": 45.484833,
+        "lon": 9.203225,
+        "streets": ["Via Vittor Pisani", "Via Napo Torriani", "Via Vitruvio", "Piazza Luigi di Savoia", "Piazza Quattro Novembre", "Via Luigi Galvani", "Via Giambattista Pirelli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Durante",
+        "lat": 45.489242,
+        "lon": 9.223550,
+        "streets": ["Viale Lombardia", "Via Andrea Catalani", "Via Casoretto", "Via Ruggero Leoncavallo", "Via Francesco Predabissi", "Via Cecilio Stazio", "Via Marco d’Aviano", "Via Andrea Costa"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Egeo",
+        "lat": 45.513131,
+        "lon": 9.213975,
+        "streets": ["Via Roberto Cozzi", "Via Sesto San Giovanni", "Via Ettore Fieramosca", "Via Piero Cardiroli", "Via Luigi Emanuelli", "Via Giovanni Polvani"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Emilia",
+        "lat": 45.462546,
+        "lon": 9.216633,
+        "streets": ["Viale Umbria", "Viale Piceno", "Via Carlo Poma", "Corso Ventidue Marzo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Erba Carlo",
+        "lat": 45.475040,
+        "lon": 9.221368,
+        "streets": ["Via Luigi Vanvitelli", "Via Plinio", "Via Giovanni Pascoli", "Via Pinturicchio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Esquilino",
+        "lat": 45.475691,
+        "lon": 9.132783,
+        "streets": ["Via Guglielmo Ciardi", "Via Bernardo Zamagna", "Via Simone Stratico", "Via dei Rospiglioni"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Ferrara",
+        "lat": 45.437713,
+        "lon": 9.220121,
+        "streets": ["Via Pomposa", "Via dei Panigarola", "Via Mompiani", "Via Polesine", "Via Mincio", "Via Comacchio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Fidia",
+        "lat": 45.489387,
+        "lon": 9.185889,
+        "streets": ["Via Cola Montano", "Via Medardo Rosso", "Via Luigi Porro Lambertenghi", "Via Ugo Bassi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Firenze",
+        "lat": 45.487933,
+        "lon": 9.156336,
+        "streets": ["Viale Teodorico", "Via Ruggero di Lauria", "Corso Sempione", "Via Piero della Francesca", "Via Cenisio", "Via Francesco Caracciolo", "Via Lorenzo Bartolini", "Via Giovanni Antonio Plana", "Viale Certosa"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Fontana",
+        "lat": 45.463575,
+        "lon": 9.193861,
+        "streets": ["Via San Clemente", "Via Verziere", "Largo dei Bersaglieri", "Via Beccaria", "Via Pattari", "Via dell’Arcivescovado"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Fortunato Giustino",
+        "lat": 45.523587,
+        "lon": 9.174792,
+        "streets": ["Via Vincenzo da Seregno", "Via Alessandro Bisnati", "Via Casarsa", "Via Caltagirone", "Via Riccardo Galeazzi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Frattini Pietro",
+        "lat": 45.451862,
+        "lon": 9.142436,
+        "streets": ["Via Gentile Bellini", "Via Bartolomeo d'Alviano", "Via Salvatore Barzilai", "Via Lorenteggio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Fusina",
+        "lat": 45.468675,
+        "lon": 9.229778,
+        "streets": ["Viale Argonne", "Via Aselli", "Via Canaletto"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Gambara Veronica",
+        "lat": 45.465005,
+        "lon": 9.142992,
+        "streets": ["Via Sofonisba Anguissola", "Via Pasquale Fornari", "Via Antonio Tolomeo Trivulzio", "Via Antonello da Messina", "Via Jacopo Palma"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Gerusalemme",
+        "lat": 45.484647,
+        "lon": 9.166820,
+        "streets": ["Via Giuseppe Mussi", "Via Andrea Mantegna", "Via Monviso", "Via Induno", "Via Fauchè", "Via Poliziano"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Ghirlandaio Domenico",
+        "lat": 45.467096,
+        "lon": 9.146364,
+        "streets": ["Viale Ergisto Bezzi", "Via Parmigianino", "Via Correggio", "Via Daniele Ranzoni", "Via Rubens"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Giambellino",
+        "lat": 45.447264,
+        "lon": 9.137267,
+        "streets": ["Via Giambellino", "Via dei Biancospini", "Via dei Tulipani", "Via Emanuele Odazio", "Largo dei Gelsomini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Giovanni XXIII Papa",
+        "lat": 45.475491,
+        "lon": 9.164913,
+        "streets": ["Via Reggimento Savoia Cavalleria", "Via Abbondio Sangiorgio", "Via Andrea Massena", "Via Vincenzo Monti"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Giovine Italia",
+        "lat": 45.467506,
+        "lon": 9.169135,
+        "streets": ["Via Aurelio Saffi", "Via Fratelli Ruffini", "Via Giovanni Boccaccio", "Via Sebeto", "Via Lorenzo Mascheroni"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Giulio Cesare",
+        "lat": 45.473754,
+        "lon": 9.155564,
+        "streets": ["Via Michelangelo Buonarroti", "Via Paolo Veronese", "Via Belisario", "Via Plutarco", "Via Pompeo", "Via Senofonte", "Piazza Elsa Morante", "Via Spinola", "Via Flavio Vegezio", "Viale Ezio", "Via Tintoretto"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Gobetti Piero",
+        "lat": 45.485839,
+        "lon": 9.233983,
+        "streets": ["Via Giovanni Bottesini", "Via Viminale", "Via Antonio Salieri", "Via Monte Nevoso", "Via Eugenio Carpi", "Via Antonio Porpora", "Via Vallazze"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Gorini Paolo",
+        "lat": 45.473292,
+        "lon": 9.230100,
+        "streets": ["Via Aselli", "Via Vigilio Inama", "Via Gaetano Strambio", "Via Giacomo Venezian", "Via Giuseppe Ponzio", "Via Luigi Mangiagalli", "Via Sandro Botticelli", "Via Moretto da Brescia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Gramsci Antonio",
+        "lat": 45.481612,
+        "lon": 9.168779,
+        "streets": ["Via Luigi Sabatelli", "Via Luigi Canonica", "Via Piero della Francesca", "Via Procaccini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Grandi Giuseppe",
+        "lat": 45.462502,
+        "lon": 9.220747,
+        "streets": ["Via Antonio Dossi", "Via Francesco Rezzonico", "Corso Ventidue Marzo", "Via Compagnoni", "Via Polti de Bianchi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Guardi Francesco",
+        "lat": 45.470126,
+        "lon": 9.226561,
+        "streets": ["Via Pietro da Cortona", "Via Canaletto", "Via Giovanni Briosi", "Via Cesare Saldini", "Via Giuseppe Colombo", "Via Guido Reni", "Via Giovanni da Milano"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Imperatore Tito",
+        "lat": 45.454379,
+        "lon": 9.218249,
+        "streets": ["Via Lattanzio", "Via Scipione Pistrucci", "Via Baldassarre Oltrocchi", "Via Filippino degli Organi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Insubria",
+        "lat": 45.453073,
+        "lon": 9.220641,
+        "streets": ["Via Sebino", "Via Emilio Faà di Bruno", "Via degli Etruschi", "Via Laura Ciceri Visconti", "Via Scipione Pistrucci", "Via Ennio", "Via Val Strona"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Istria",
+        "lat": 45.501739,
+        "lon": 9.198013,
+        "streets": ["Viale Zara", "Via Abbazia", "Via Intra", "Viale Fulvio Testi", "Via Latisana", "Via Lussino", "Via Lussimpiccolo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Kennedy J. F.",
+        "lat": 45.495097,
+        "lon": 9.130393,
+        "streets": ["Via Vigorelli", "Via Fabrizio Quattrocchi", "Via Inverigo", "Via del Ghisallo", "Viale Alcide De Gasperi"],
+        "tracks": []
+    },
+    {
+        "name": "Largo La Foppa",
+        "lat": 45.478150,
+        "lon": 9.184729,
+        "streets": ["Corso Garibaldi", "Via Statuto", "Via Varese", "Via Alessandro Volta", "Via della Moscova"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Lagosta",
+        "lat": 45.489566,
+        "lon": 9.191113,
+        "streets": ["Via Garigliano", "Via Volturno", "Via Pola", "Viale Zara", "Via Traù", "Via Perasto"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Lega Lombarda",
+        "lat": 45.478030,
+        "lon": 9.181136,
+        "streets": ["Via Legnano", "Via di Porta Tenaglia", "Piazzale Biancamano", "Viale Elvezia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Leonardo da Vinci",
+        "lat": 45.478158,
+        "lon": 9.224497,
+        "streets": ["Via Giuseppe Colombo", "Via Giuseppe Celoria", "Via Edoardo Bonardi", "Via Andrea Maria Ampere", "Via Giovanni Villani", "Via Benedetto Spinoza", "Viale Romagna", "Via Giovanni Pascoli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Libia",
+        "lat": 45.454358,
+        "lon": 9.210160,
+        "streets": ["Via Sallustio", "Via Contardo Ferrini", "Via Angelo Maj", "Via Lucano", "Via Cadore", "Via Silio Italico", "Via Properzio", "Viale Lazio", "Via Seneca", "Via Svetonio", "Via Gerolamo Tiraboschi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Lodi",
+        "lat": 45.447331,
+        "lon": 9.210210,
+        "streets": ["Corso Lodi", "Via Sannio", "Viale Umbria", "Viale Isonzo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Loreto",
+        "lat": 45.486229,
+        "lon": 9.217016,
+        "streets": ["Viale Abruzzi", "Via Nicola Antonio Porpora", "Via Andrea Costa", "Via Padova", "Viale Monza", "Via Brianza", "Via Andrea Doria", "Corso Buenos Aires"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Lotto Lorenzo",
+        "lat": 45.479962,
+        "lon": 9.142983,
+        "streets": ["Viale Giovanni Migliara", "Via Monte Rosa", "Via Monte Bianco", "Via Paolo Onorato Vigliani", "Via Sebastiano Veniero", "Viale Enrico Elia", "Via Diomede", "Viale Federico Caprilli", "Via Gavirate"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Lugano",
+        "lat": 45.498812,
+        "lon": 9.165547,
+        "streets": ["Via Giovita Scalvini", "Via Giovanni Arrivabene", "Via Benedetto Varchi", "Via Colico", "Cavalcavia Adriano Bacula"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Luigi di Savoia",
+        "lat": 45.485798,
+        "lon": 9.206826,
+        "streets": ["Via Lepetit", "Via Scarlatti", "Via Andrea Doria", "Via Pergolesi", "Via Soperga", "Via Ferrante Aporti", "Tunnel del Mortirolo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Maciachini Carlo",
+        "lat": 45.497913,
+        "lon": 9.185869,
+        "streets": ["Via Luigi Federico Menabrea", "Via Carlo Farini", "Viale Marche", "Via Valassina", "Via Benigno Crespi", "Via Carlo Imbonati", "Viale Edoardo Jenner", "Via Valtellina"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Maggi Gian Antonio",
+        "lat": 45.437595,
+        "lon": 9.171113,
+        "streets": ["Via del Mare", "Cavalcavia Schiavoni", "Via Spezia", "Viale Famagosta"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Maria Adelaide di Savoia",
+        "lat": 45.473018,
+        "lon": 9.214753,
+        "streets": ["Via Castel Morrone", "Viale Giustiniano", "Via degli Scipioni", "Via Bartolomeo Eustachi", "Viale Regina Giovanna", "Via Nino Bixio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Martelli Franco",
+        "lat": 45.522718,
+        "lon": 9.204070,
+        "streets": ["Via Giuseppe Grilloni", "Via Empoli", "Viale Berbera", "Via Pescantina"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Martesana",
+        "lat": 45.509014,
+        "lon": 9.224586,
+        "streets": ["Viale Monza", "Via Aristotele", "Via Ranzato", "Via Erodoto"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Martini Ferdinando",
+        "lat": 45.456832,
+        "lon": 9.220629,
+        "streets": ["Via Maria Ciceri Visconti", "Via Calvairate", "Via Luisa Sanfelice", "Via Caposile", "Via Cervignano", "Via Vertoiba", "Via Costanza Arconati", "Via Marco Greppi", "Via Gaetano Strigelli", "Via Baldassarre Oltrocchi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Medaglie d'Oro",
+        "lat": 45.452199,
+        "lon": 9.202232,
+        "streets": ["Viale Sabotino", "Corso Lodi", "Via Lodovico Muratori", "Viale Monte Nero", "Viale Caldara", "Corso di Porta Romana", "Via Filippetti"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Melozzo da Forlì",
+        "lat": 45.468059,
+        "lon": 9.131224,
+        "streets": ["Via Domenico Millelire", "Via Privata Piero Martinetti", "Via Rembrandt", "Via Mario Morgantini", "Via Novara"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Miani Guglielmo",
+        "lat": 45.437320,
+        "lon": 9.154687,
+        "streets": ["Via Voltri", "Viale Famagosta", "Via Biella", "Via Santa Rita da Cascia", "Viale Faenza"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Missori Giuseppe",
+        "lat": 45.461062,
+        "lon": 9.188300,
+        "streets": ["Corso Italia", "Corso di Porta Romana", "Via Alberico Albricci", "Via Maurizio Gonzaga", "Via Giuseppe Mazzini", "Via dell'Unione", "Via Zebedia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Mistral Federico",
+        "lat": 45.435054,
+        "lon": 9.235607,
+        "streets": ["Cavalcavia Pontinia", "Via Giovanni Battista Cassinis", "Via Giacomo Filippo Lacaita", "Via Vincenzo Toffetti"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Mondadori Arnoldo",
+        "lat": 45.453047,
+        "lon": 9.191372,
+        "streets": ["Via Bianca di Savoia", "Via Crivelli", "Via San Martino"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Monte Titano",
+        "lat": 45.486136,
+        "lon": 9.237851,
+        "streets": ["Via Predin", "Via Rombon", "Via Bellincione", "Via Ronchi", "Via Plezzo", "Via Porpora"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Murani Orneste",
+        "lat": 45.473125,
+        "lon": 9.234750,
+        "streets": ["Via Arno", "Via Calzecchi", "Via Caruso", "Via Augusto Vanzetti", "Via Golgi", "Via Gaetano Strambio", "Via Inama"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Napoli",
+        "lat": 45.453355,
+        "lon": 9.153720,
+        "streets": ["Via Carlo Troya", "Via Andrea Solari", "Via Cola di Rienzo", "Via Giorgio Washington", "Viale Misurata", "Via Vespri Siciliani", "Via Giambellino"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Nigra",
+        "lat": 45.496557,
+        "lon": 9.171152,
+        "streets": ["Viale Luigi Torelli", "Viale Edoardo Jenner", "Via Privata Catone", "Via degli Imbriani", "Viale Bodio", "Via Nicostrato Castellini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Nizza Costantino",
+        "lat": 45.503091,
+        "lon": 9.189251,
+        "streets": ["Via Murat", "Via Privata Cuma", "Via Benefattori dell'Ospedale Maggiore", "Via Privata Ernesto Reinach", "Via Valassina"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Novelli Ermete",
+        "lat": 45.470891,
+        "lon": 9.219595,
+        "streets": ["Via Giulio Ceradini", "Via Giuditta Sidoli", "Via Davide Carnaghi", "Via Andrea del Sarto", "Via Andrea Verrocchio", "Via Gaio", "Via Gustavo Modena"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Oberdan Guglielmo",
+        "lat": 45.474422,
+        "lon": 9.205008,
+        "streets": ["Viale Majno", "Viale Piave", "Via Paolo Mascagni", "Via Marcello Malpighi", "Corso Buenos Aires", "Via Alessandro Tadino", "Viale Vittorio Veneto", "Bastioni di Porta Venezia", "Corso Venezia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Ohm Giorgio Simone",
+        "lat": 45.442857,
+        "lon": 9.147744,
+        "streets": ["Via Santa Rita da Cascia", "Via Giacomo Watt", "Via Morimondo", "Via Richard", "Cavalcavia Don Milani", "Via Giuseppe Cottolengo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Ovidio",
+        "lat": 45.457637,
+        "lon": 9.241425,
+        "streets": ["Via Salomone", "Via Mecenate", "Via Dalmazia", "Via Montessori", "Via Marco Brutto", "Via Attilio Regolo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Perego Giovanni",
+        "lat": 45.489612,
+        "lon": 9.169590,
+        "streets": ["Via Giuseppe Antonio Borgese", "Via Messina", "Via Stilicone", "Via Gran San Bernardo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Perrucchetti Giuseppe",
+        "lat": 45.465469,
+        "lon": 9.127718,
+        "streets": ["Via Edoardo Chinotto", "Via Tommaso Gulli", "Via Domenico Millelire"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Piemonte",
+        "lat": 45.466453,
+        "lon": 9.155170,
+        "streets": ["Via Washington", "Via Elba", "Via Monferrato", "Corso Vercelli", "Via Michelangelo Buonarroti", "Via Cuneo", "Via Giordano Rota", "Via Privata Asti", "Via Seprio", "Via Sardegna"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Piola Gabrio",
+        "lat": 45.480330,
+        "lon": 9.223653,
+        "streets": ["Viale Romagna", "Via Benedetto Spinoza", "Via Giovanni Pacini", "Viale Lombardia", "Viale Gran Sasso", "Via Donatello", "Via Enrico Noe"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Po",
+        "lat": 45.462230,
+        "lon": 9.158085,
+        "streets": ["Via Giacomo Boni", "Via Sant'Eusebio", "Via Giuseppe Dezza", "Via Andrea Verga", "Via Coluccio Salutati", "Via Cimarosa", "Via Elba", "Via Matilde Serao", "Via Sebastiano Caboto"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Porto di Classe",
+        "lat": 45.467613,
+        "lon": 9.229843,
+        "streets": ["Via Luigi Frapolli", "Via Lomellina", "Viale Argonne"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Prealpi",
+        "lat": 45.494807,
+        "lon": 9.153202,
+        "streets": ["Via Masolino da Panicale", "Via Monte Generoso", "Via Grigna", "Via degli Artieri", "Via Campo dei Fiori", "Via Giovanni Ambrogio de Predis", "Via Jacopino da Tradate", "Via Michelino da Besozzo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Principessa Clotilde",
+        "lat": 45.480036,
+        "lon": 9.192625,
+        "streets": ["Corso di Porta Nuova", "Viale Monte Santo", "Via Galileo Galilei", "Via Amerigo Vespucci", "Viale Monte Grappa", "Bastioni di Porta Nuova", "Via Castelfidardo"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Quinto Alpini",
+        "lat": 45.472668,
+        "lon": 9.167895,
+        "streets": ["Via Ariosto", "Via Torquato Tasso", "Via Vincenzo Monti", "Via Revere", "Via Mario Pagano"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Resistenza Partigiana della",
+        "lat": 45.458766,
+        "lon": 9.177824,
+        "streets": ["Corso Genova", "Via Conca del Naviglio", "Via dei Fabbri", "Via Cesare Correnti", "Via Caminadella", "Via De Amicis"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Rio de Janeiro",
+        "lat": 45.473414,
+        "lon": 9.223384,
+        "streets": ["Viale Romagna", "Via Moretto da Brescia", "Via Sandro Botticelli", "Via Luigi Mangiagalli", "Via Plinio", "Via Filippo Juvara", "Via Andrea del Sarto"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Risorgimento",
+        "lat": 45.467905,
+        "lon": 9.210861,
+        "streets": ["Via Calvi", "Via Fiamma", "Corso Indipendenza", "Via Carlo Pisacane", "Via Poerio", "Corso Concordia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Rosa Gabriele",
+        "lat": 45.437608,
+        "lon": 9.224413,
+        "streets": ["Via Omero", "Via Giovanni Montemartini", "Via Vittorio Barzoni", "Via Giuseppe Avezzana", "Via Enrico Martini", "Via Giacinto Mompiani", "Via dei Cinquecento"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza San Babila",
+        "lat": 45.466630,
+        "lon": 9.197646,
+        "streets": ["Largo Arturo Toscanini", "Corso Monforte", "Corso Venezia", "Via Bagutta", "Corso Matteotti", "Corso Vittorio Emanuele II"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza San Gioachimo",
+        "lat": 45.481294,
+        "lon": 9.197488,
+        "streets": ["Via Galileo Galilei", "Via Cartesio", "Via Ferdinando di Savoia", "Via Antonio Locatelli", "Via Fabio Filzi", "Via Gustavo Fara", "Via Vincenzo Viviani", "Viale della Liberazione"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza San Giovanni Battista alla Creta",
+        "lat": 45.454970,
+        "lon": 9.121618,
+        "streets": ["Via dello Storno", "Via del Passero", "Via del Pettirosso", "Via dell'Allodola", "Via dell'Usignolo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Sant'Agostino",
+        "lat": 45.458977,
+        "lon": 9.170497,
+        "streets": ["Viale Papiniano", "Via Cesare da Sesto", "Via Olona", "Via Tarquinio Prisco"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Sant'Ambrogio",
+        "lat": 45.462016,
+        "lon": 9.174877,
+        "streets": ["Via Lanzone", "Largo Fra Agostino Gemelli", "Largo Caduti Milanesi per la Patria", "Via Sant'Agnese", "Via Terraggio", "Galleria Giuseppe Borella", "Via San Vittore"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Sant'Angelo",
+        "lat": 45.476072,
+        "lon": 9.192079,
+        "streets": ["Corso di Porta Nuova", "Via della Moscova"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Santa Maria del Suffragio",
+        "lat": 45.462253,
+        "lon": 9.211782,
+        "streets": ["Via Emilio Morosini", "Corso Ventidue Marzo", "Via Carlo Foldi", "Via Bovesin de la Riva", "Via Fiamma"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Segesta",
+        "lat": 45.475869,
+        "lon": 9.137731,
+        "streets": ["Viale Mar Jonio", "Via Mariotto Albertinelli", "Via Monreale", "Via Gavirate", "Via Laveno", "Via Fausto Coppi", "Via degli Ottoboni", "Via Simone Stratico", "Via Pier Alessandro Paravia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Segrino",
+        "lat": 45.490241,
+        "lon": 9.189149,
+        "streets": ["Via Pietro Borsieri", "Via Traù", "Via Lario", "Via Genova Thaon di Revel", "Via Alserio", "Via Ugo Bassi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Selinunte",
+        "lat": 45.471951,
+        "lon": 9.137421,
+        "streets": ["Viale Aretusa", "Via Giacinto Gigante", "Via Carlo Maratta", "Viale Mar Jonio", "Via Bernardo Zamagna", "Via Mario Morgantini"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Sempione",
+        "lat": 45.475790,
+        "lon": 9.172324,
+        "streets": ["Via Mario Pagano", "Via Bertani", "Via Cagnola", "Corso Sempione", "Via Abbondio San Giorgio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Sesia Davide",
+        "lat": 45.498452,
+        "lon": 9.229246,
+        "streets": ["Via Francesco Cavezzali", "Via Luigi Prinetti", "Via Privata Terenzio Mamiani", "Via Stamira d’Ancona", "Via Prinetti"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Sicilia",
+        "lat": 45.464437,
+        "lon": 9.153134,
+        "streets": ["Via Giasone del Maino", "Via Ruggero Settimo", "Via Sardegna", "Via Sacco", "Via dei Gracchi"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Siena",
+        "lat": 45.465119,
+        "lon": 9.136910,
+        "streets": ["Viale Pisa", "Via Jacopo Palma", "Via Pisanello", "Viale Aretusa", "Via Tommaso Gulli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Raul Sire",
+        "lat": 45.492276,
+        "lon": 9.229832,
+        "streets": ["Via Teodosio", "Via Emilio Olivari", "Via Palmanova", "Via Clitumno", "Via Leoncavallo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Spotorno",
+        "lat": 45.493754,
+        "lon": 9.187551,
+        "streets": ["Via Genova Thaon di Revel", "Via Stelvio", "Via Paolo Bassi", "Via Luigi Federico Menabrea", "Via Cusio"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Stazione Genova",
+        "lat": 45.453219,
+        "lon": 9.170214,
+        "streets": ["Via Valenza", "Via Vigevano", "Corso Cristoforo Colombo", "Via Ventimiglia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Stuparich Carlo",
+        "lat": 45.483143,
+        "lon": 9.143159,
+        "streets": ["Viale Enrico Elia", "Via Francesco Albani", "Via Alessandro Algardi", "Via Renato Serra", "Via Angelo Salmoiraghi", "Via Marco Cremosano"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Susa",
+        "lat": 45.468118,
+        "lon": 9.223845,
+        "streets": ["Viale Campania", "Via dall'Ongaro", "Viale Argonne", "Via Giovanni da Milano", "Viale Romagna", "Via Giuditta Sidoli", "Corso Plebisciti", "Via Gerolamo Turroni"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Tel Aviv",
+        "lat": 45.498144,
+        "lon": 9.234529,
+        "streets": ["Via Bruno Cesana", "Via Oropa", "Via Derna", "Via Bengasi", "Via Privata Atene", "Via Anacreonte"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Tirana",
+        "lat": 45.443710,
+        "lon": 9.129627,
+        "streets": ["Via Gonin", "Via Giambellino", "Via Segneri", "Via Inganni"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Trento",
+        "lat": 45.446996,
+        "lon": 9.202884,
+        "streets": ["Via Isonzo", "Via Adige", "Via Crema", "Via Palladio"],
+        "tracks": []
+    },
+    {
+        "name": "Largo Treves Claudio",
+        "lat": 45.475237,
+        "lon": 9.186842,
+        "streets": ["Via Solferino", "Via Balzan", "Via Statuto", "Via Palermo"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Tricolore del",
+        "lat": 45.467829,
+        "lon": 9.206459,
+        "streets": ["Viale Bianca Maria", "Viale Premuda", "Corso Concordia", "Viale Piave", "Viale Majno", "Corso Monforte"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Tripoli",
+        "lat": 45.459271,
+        "lon": 9.148822,
+        "streets": ["Via Zanzur", "Viale Misurata", "Via Roncaglia", "Via Costanza", "Via Sardegna", "Via Ergisto Bezzi", "Via Mogadiscio", "Via Caterina da Forlì", "Viale Etiopia"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Udine",
+        "lat": 45.491079,
+        "lon": 9.236975,
+        "streets": ["Via Ronchi", "Via Feltre", "Via Carnia", "Via Tolmezzo", "Via Pordenone"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Velasquez Diego",
+        "lat": 45.467607,
+        "lon": 9.141217,
+        "streets": ["Via Pisanello", "Via Antonello da Messina", "Via Rubens", "Via Osoppo", "Via Saverio Altamura", "Via Felice Bisleri", "Via Rembrandt"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Vesuvio",
+        "lat": 45.459803,
+        "lon": 9.159827,
+        "streets": ["Via Allegranza", "Via California", "Via Caprera", "Via Lipari", "Via Sant’Eusebio", "Via Egadi", "Via Stromboli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Vigili del Fuoco",
+        "lat": 45.478871,
+        "lon": 9.246636,
+        "streets": ["Via Pitteri", "Via Pedonale Maria Grazia Cutuli"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Virgilio",
+        "lat": 45.467772,
+        "lon": 9.173329,
+        "streets": ["Via Vincenzo Monti", "Via Boccaccio", "Via Metastasio", "Via Caradosso"],
+        "tracks": []
+    },
+    {
+        "name": "Piazzale Zavattari Fratelli",
+        "lat": 45.467772,
+        "lon": 9.173329,
+        "streets": ["Viale Murillo", "Via Pietro Tempesta", "Viale Giovanni Migliara", "Via Monreale", "Via Vodice"],
+        "tracks": []
+    },
+    {
+        "name": "Piazza Wagner Riccardo",
+        "lat": 45.468184,
+        "lon": 9.156350,
+        "streets": ["Via Michelangelo Buonarroti", "Via Belfiore", "Via Piero Capponi", "Via Marghera"],
+        "tracks": []
+    },
+    {
+        "name": "Giro Tribunale",
+        "lat": 45.461128,
+        "lon": 9.201399,
+        "streets": ["Via San Barnaba", "Via Luciano Manara", "Corso di Porta Vittoria", "Via Carlo Freguglia"],
+        "tracks": []
+    },
+    {
+        "name": "Giro Fiera",
+        "lat": 45.476915,
+        "lon": 9.155932,
+        "streets": ["Piazzale Carlo Magno", "Viale Duilio", "Largo Domodossola", "Viale Severino Boezio", "Piazza 6 Febbraio", "Viale Cassiodoro", "Viale Belisario", "Piazzale Giulio Cesare", "Viale Ezio", "Piazza Giovanni Amendola", "Viale Berengario", "Piazzale Arduino", "Viale Eginardo", "Via Bartolomeo Colleoni", "Via Gattamelata"],
+        "tracks": []
+    }
+       ];
+
+        const gpxLayers = {};
+        const trackTooltip = document.getElementById('track-tooltip');
+
+        // Funzione per calcolare la distanza tra due punti (in metri)
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Raggio della Terra in metri
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Aggiungi i marker per le piazze
+        squares.forEach((square, i) => {
+            if (!square.name || typeof square.lat !== 'number' || typeof square.lon !== 'number' || !Array.isArray(square.streets)) {
+                console.warn(`Piazza ${i} non valida:`, square);
+                return;
+            }
+            console.log(`Marker per ${square.name} a [${square.lat}, ${square.lon}]`);
+            const icon = L.divIcon({
+                className: 'square-marker',
+                iconSize: [16, 16],
+                iconAnchor: [8, 8],
+                popupAnchor: [0, -8]
+            });
+            const marker = L.marker([square.lat, square.lon], { icon })
+                .addTo(map)
+                .bindPopup(() => {
+                    const tracks = square.tracks.length > 0
+                        ? `<h3>Tracce GPX</h3>` + square.tracks.map(trackName => {
+                            const layerId = Object.keys(gpxLayers).find(id => id.includes(trackName));
+                            const checked = layerId && map.hasLayer(gpxLayers[layerId]) ? 'checked' : '';
+                            return `
+                                <label>
+                                    <input type="checkbox" class="track-checkbox" data-layer-id="${layerId || ''}" ${checked}>
+                                    ${trackName}
+                                </label>
+                            `;
+                        }).join('')
+                        : '<p>Nessuna traccia GPX associata</p>';
+                    return `
+                        <div class="popup-content">
+                            <h3>Vie in ${square.name}</h3>
+                            <ul>${square.streets.map(s => `<li>${s}</li>`).join('')}</ul>
+                            ${tracks}
+                        </div>
+                    `;
+                }, { closeOnClick: true, autoClose: false });
+            marker.on('click', () => {
+                map.setView([square.lat, square.lon], 16);
+            });
+            // Listener per i checkbox nel popup
+            marker.on('popupopen', () => {
+                document.querySelectorAll('.track-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        const layerId = checkbox.dataset.layerId;
+                        if (!layerId || !gpxLayers[layerId]) return;
+                        const layer = gpxLayers[layerId];
+                        if (checkbox.checked) {
+                            map.addLayer(layer);
+                            map.fitBounds(layer.getBounds());
+                            // Sincronizza il checkbox nel menu a tendina
+                            const dropdownCheckbox = document.getElementById(layerId);
+                            if (dropdownCheckbox) dropdownCheckbox.checked = true;
+                        } else {
+                            map.removeLayer(layer);
+                            trackTooltip.style.display = 'none';
+                            // Sincronizza il checkbox nel menu a tendina
+                            const dropdownCheckbox = document.getElementById(layerId);
+                            if (dropdownCheckbox) dropdownCheckbox.checked = false;
+                            // Zoom su un'altra traccia visibile, se presente
+                            const visibleLayer = Object.values(gpxLayers).find(l => map.hasLayer(l));
+                            if (visibleLayer) map.fitBounds(visibleLayer.getBounds());
+                        }
+                    });
+                });
+            });
+        });
+
+        // File GPX nella stessa directory
+        const localGpxFiles = ['track1.gpx', 'track2.gpx']; // Sostituisci con i tuoi file
+
+        function addGpxTrack(url, name, isFile = false, content = null) {
+            console.log(`Caricamento traccia: ${name}, isFile: ${isFile}`);
+            const color = getNextColor();
+            const startIcon = L.divIcon({
+                className: 'start-marker',
+                html: `<div style="background: ${color}; width: 24px; height: 24px;"></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12],
+                popupAnchor: [0, -12]
+            });
+            const endIcon = L.divIcon({
+                className: 'end-marker',
+                html: `<div style="background: ${color}; width: 20px; height: 20px;"></div>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10],
+                popupAnchor: [0, -10]
+            });
+            const gpx = new L.GPX(isFile ? content : url, {
+                async: true,
+                marker_options: { startIcon, endIcon, shadowUrl: null },
+                polyline_options: { color, opacity: 0.5, weight: 8 }
+            })
+                .on('loaded', e => {
+                    console.log(`Traccia caricata: ${name}`);
+                    const bounds = e.target.getBounds();
+                    const trackList = document.getElementById('gpx-tracks');
+                    const label = document.createElement('label');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.checked = true;
+                    checkbox.id = `track-${name}-${Object.keys(gpxLayers).length}`;
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            map.addLayer(gpx);
+                            map.fitBounds(bounds);
+                            // Sincronizza i checkbox nei popup
+                            document.querySelectorAll(`.track-checkbox[data-layer-id="${checkbox.id}"]`)
+                                .forEach(cb => cb.checked = true);
+                        } else {
+                            map.removeLayer(gpx);
+                            trackTooltip.style.display = 'none';
+                            // Sincronizza i checkbox nei popup
+                            document.querySelectorAll(`.track-checkbox[data-layer-id="${checkbox.id}"]`)
+                                .forEach(cb => cb.checked = false);
+                            // Zoom su un'altra traccia visibile, se presente
+                            const visibleLayer = Object.values(gpxLayers).find(layer => map.hasLayer(layer));
+                            if (visibleLayer) map.fitBounds(visibleLayer.getBounds());
+                        }
+                    });
+                    const span = document.createElement('span');
+                    span.textContent = name || e.target.get_name() || 'Traccia';
+                    label.appendChild(checkbox);
+                    label.appendChild(span);
+                    trackList.appendChild(label);
+                    gpxLayers[checkbox.id] = gpx;
+
+                    // Associa la traccia alle piazze
+                    const trackPoints = e.target.getLayers().filter(layer => layer instanceof L.Polyline);
+                    squares.forEach(square => {
+                        // Criterio 1: Nome della traccia inizia con il nome della piazza
+                        const squareNamePrefix = square.name.replace(/^Piazza\s+/i, '').toLowerCase();
+                        const trackNameLower = name.toLowerCase();
+                        const nameMatches = trackNameLower.startsWith(squareNamePrefix);
+                        // Criterio 2: Punto iniziale entro 50 metri
+                        let distanceMatches = false;
+                        if (trackPoints.length > 0) {
+                            const coords = trackPoints[0].getLatLngs();
+                            if (coords.length > 0) {
+                                const startPoint = coords[0];
+                                const distance = getDistance(startPoint.lat, startPoint.lng, square.lat, square.lon);
+                                distanceMatches = distance < 50;
+                            }
+                        }
+                        if (nameMatches || distanceMatches) {
+                            square.tracks.push(name);
+                            console.log(`Traccia ${name} associata a ${square.name} (Nome: ${nameMatches}, Distanza: ${distanceMatches})`);
+                        }
+                    });
+
+                    const tooltipContent = name || e.target.get_name() || 'Traccia';
+                    gpx.on('mouseover', () => {
+                        trackTooltip.textContent = tooltipContent;
+                        trackTooltip.style.display = 'block';
+                    });
+                    gpx.on('mouseout', () => {
+                        trackTooltip.style.display = 'none';
+                    });
+                    map.fitBounds(bounds);
+                })
+                .on('error', e => {
+                    console.error('Errore GPX:', url || name, e);
+                    alert('Errore traccia: ' + (url || name));
+                })
+                .addTo(map);
+        }
+
+        // Carica i file GPX dalla directory
+        localGpxFiles.forEach(file => {
+            fetch(file)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}: ${file} non trovato`);
+                    return res.text();
+                })
+                .then(content => {
+                    addGpxTrack(null, file, true, content);
+                })
+                .catch(err => {
+                    console.error('Errore caricamento GPX:', err.message);
+                    alert(`Errore caricamento ${file}: ${err.message}`);
+                });
+        });
+
+        const dropdownButton = document.querySelector('.dropdown-button');
+        const dropdownContent = document.querySelector('.dropdown-content');
+        dropdownButton.addEventListener('click', () => {
+            dropdownContent.classList.toggle('show');
+        });
+        window.addEventListener('click', e => {
+            if (!e.target.matches('.dropdown-button') && !dropdownContent.contains(e.target)) {
+                dropdownContent.classList.remove('show');
+            }
+        });
+
+        // Caricamento manuale
+        const uploadButton = document.getElementById('upload-button');
+        const gpxUploadInput = document.getElementById('gpx-upload');
+        uploadButton.addEventListener('click', () => {
+            console.log('Clic su Carica GPX');
+            gpxUploadInput.value = ''; // Resetta l'input
+            gpxUploadInput.click();
+        });
+        gpxUploadInput.addEventListener('change', e => {
+            console.log('File selezionato:', e.target.files);
+            const file = e.target.files[0];
+            if (!file) {
+                console.warn('Nessun file selezionato');
+                alert('Nessun file selezionato');
+                return;
+            }
+            if (!file.name.toLowerCase().endsWith('.gpx')) {
+                console.error('File non GPX:', file.name);
+                alert('Seleziona un file .gpx valido');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = e => {
+                console.log('File letto:', file.name, 'Dimensione:', file.size);
+                const content = e.target.result;
+                try {
+                    addGpxTrack(null, file.name, true, content);
+                    console.log('Traccia manuale caricata con successo:', file.name);
+                } catch (err) {
+                    console.error('Errore caricamento manuale GPX:', err);
+                    alert(`Errore caricamento ${file.name}: formato non valido`);
+                }
+            };
+            reader.onerror = () => {
+                console.error('Errore lettura file:', file.name);
+                alert(`Errore lettura ${file.name}`);
+            };
+            reader.readAsText(file);
+        });
+    </script>
+</body>
+</html>
