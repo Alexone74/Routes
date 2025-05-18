@@ -4163,36 +4163,7 @@
     },
     {
       "id": 129,
-      "nome": "Cavour - Rogoredo",
-      "vie": [
-        "Via Senato",
-        "Via S. Damiano",
-        "Via Visconti di Modrone",
-        "Via Francesco Sforza",
-        "SX Corso Porta Vittoria (palazzo giustizia)",
-        "Piazza S. Pietro in Gessate e Marco Biagi",
-        "Dx Via Podgora",
-        "Sx Besana",
-        "Via F.lli Campi",
-        "Via Spartaco",
-        "Via Maestri Campionesi",
-        "Via Pistrucci",
-        "Piazza Imperatore Tito",
-        "Via Pistrucci",
-        "Piazza Insubria",
-        "Via Faa di bruno",
-        "Via Piazza Cuoco",
-        "Via Monte Cimone",
-        "Dx Via Varsavia",
-        "Via Sulmona",
-        "Via Toffetti",
-        "Piazza mistral",
-        "Via Cassinis"
-      ]
-    },
-    {
-      "id": 130,
-      "nome": "Cavouur - Gesu",
+      "nome": "Cavour - Gesu",
       "vie": [
         "Via Manzoni",
         "Sx Via Bigli",
@@ -4225,6 +4196,35 @@
         "Viale Forlanini",
         "Piazza dell'Artigianato",
         "Viale Forlanini"
+      ]
+    },
+    {
+      "id": 130,
+      "nome": "Cavour - Rogoredo",
+      "vie": [
+        "Via Senato",
+        "Via S. Damiano",
+        "Via Visconti di Modrone",
+        "Via Francesco Sforza",
+        "SX Corso Porta Vittoria (palazzo giustizia)",
+        "Piazza S. Pietro in Gessate e Marco Biagi",
+        "Dx Via Podgora",
+        "Sx Besana",
+        "Via F.lli Campi",
+        "Via Spartaco",
+        "Via Maestri Campionesi",
+        "Via Pistrucci",
+        "Piazza Imperatore Tito",
+        "Via Pistrucci",
+        "Piazza Insubria",
+        "Via Faa di bruno",
+        "Via Piazza Cuoco",
+        "Via Monte Cimone",
+        "Dx Via Varsavia",
+        "Via Sulmona",
+        "Via Toffetti",
+        "Piazza mistral",
+        "Via Cassinis"
       ]
     },
     {
@@ -4990,7 +4990,31 @@
     },
     {
       "id": 155,
-      "nome": "Maciacchini - S. Paolo",
+      "nome": "Maciachini - Piemonte",
+      "vie": [
+        "Via Farini",
+        "Piazza Pasolini",
+        "Via Farini",
+        "Cavalcavia della Sorgente (fuori dalla pref)",
+        "Piazza Cimitero Monumentale",
+        "Via Procaccini",
+        "Sx Via Bertini",
+        "Via Prina",
+        "Sx Via Londonio",
+        "Dx Via Moscati",
+        "Via Massena",
+        "Piazza Giovanni XXIII",
+        "Via Reggimento Cavalleria",
+        "Via Pallavicino",
+        "Dx Via Pagano",
+        "Via Cherubini",
+        "Dx Corso Vercelli",
+        "Piazza Piemonte"
+      ]
+    },
+    {
+      "id": 156,
+      "nome": "Maciachini - S. Paolo",
       "vie": [
         "Via Farini",
         "cavalcavia della Sorgente",
@@ -5021,30 +5045,6 @@
         "Piazza Miani",
         "Via Voltri",
         "Sx Via DiRudini"
-      ]
-    },
-    {
-      "id": 156,
-      "nome": "Maciachini - Piemonte",
-      "vie": [
-        "Via Farini",
-        "Piazza Pasolini",
-        "Via Farini",
-        "Cavalcavia della Sorgente (fuori dalla pref)",
-        "Piazza Cimitero Monumentale",
-        "Via Procaccini",
-        "Sx Via Bertini",
-        "Via Prina",
-        "Sx Via Londonio",
-        "Dx Via Moscati",
-        "Via Massena",
-        "Piazza Giovanni XXIII",
-        "Via Reggimento Cavalleria",
-        "Via Pallavicino",
-        "Dx Via Pagano",
-        "Via Cherubini",
-        "Dx Corso Vercelli",
-        "Piazza Piemonte"
       ]
     },
     {
@@ -6009,10 +6009,7 @@
         "Via Pordedone",
         "Largo Gemito",
         "Via Casoretto",
-        "Via San materno",
-        "Via Casoretto",
-        "Piazza Durante",
-        "Via Teodosio",
+        "Dx Via Teodosio",
         "Via Ponzio",
         "Piazza Gorini",
         "Via Aselli",
