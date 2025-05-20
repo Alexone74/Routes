@@ -48,7 +48,8 @@
         "Via Grossich",
         "Dx Via Pacini",
         "Piazza Bottini"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Bottini.jpg"
     },
     {
       "id": 3,
@@ -531,7 +532,8 @@
         "Sx Via Conservatorio",
         "Dx Mascagni",
         "Attraverso Visconti di Modrone"
-      ]
+      ],
+      "immagine": "Aeroporti/Linate - Toscanini.jpg"
     },
     {
       "id": 15,
@@ -611,7 +613,7 @@
     },
     {
       "id": 17,
-      "nome": "Malpensa - MIlano da Marcallo",
+      "nome": "Malpensa - Milano da Marcallo",
       "vie": [
         "Prendo la SS 336 direzione Magenta",
         "Passo le uscite",
@@ -629,7 +631,8 @@
         "Incrocio Tangenziale Ovest",
         "Rho Fiera",
         "Viale Certosa"
-      ]
+      ],
+      "immagine": "Aeroporti/Malpensa - Milano da Marcallo.jpg"
     },
     {
       "id": 18,
