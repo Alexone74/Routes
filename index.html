@@ -64,10 +64,9 @@
         'Piazze',
         'Cerchie',
         'Stazioni',
-		'Varie',
         'Autostrade',
-        'Duomo',
-		'Orale'
+		'Varie',
+        'Duomo'
       ];
     
       // Stato per memorizzare i percorsi
@@ -81,14 +80,6 @@
       var [percorsoSelezionato, setPercorsoSelezionato] = React.useState(null);
       var [viaCorrente, setViaCorrente] = React.useState(0);
       var [testoRicerca, setTestoRicerca] = React.useState('');
-	  
-	    // AGGIUNGI QUESTA FUNZIONE - Gestisce il click sulle categorie
-  function handleCategoriaClick(categoria) {
-    if (categoria === 'Orale') {
-      // Apri il documento in una nuova finestra
-      window.open('./Ric/Orale.html', '_blank');
-      return;
-    }
       
       // Effetto per caricare i dati dal file JSON all'avvio dell'app
       React.useEffect(function() {
