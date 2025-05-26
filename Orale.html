@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normative Taxi - Promemoria</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #34495e;
+            --text-light: #f8f9fa;
+            --text-dark: #2c3e50;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px 0;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        #list-container {
+            position: relative;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .category {
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: var(--light-bg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .category:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            cursor: pointer;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            font-weight: 600;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .category-header:hover {
+            background-color: var(--dark-bg);
+        }
+
+        .category-title {
+            flex: 1;
+            font-size: 15px;
+        }
+
+        .category-number {
+            background-color: var(--secondary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .toggle-arrow {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-arrow::before {
+            content: '▼';
+            display: inline-block;
+        }
+
+        .category.collapsed .toggle-arrow::before {
+            content: '▶';
+        }
+
+        .category-content {
+            display: block;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .category.collapsed .category-content {
+            display: none;
+        }
+
+        .content-item {
+            padding: 8px 10px 8px 42px;
+            position: relative;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+        }
+
+        .content-item:hover {
+            background-color: #f0f4f8;
+        }
+
+        .content-item::before {
+            content: "";
+            position: absolute;
+            left: 18px;
+            top: 15px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+        }
+
+        .content-subheader {
+            font-weight: 600;
+            color: var(--secondary-color);
+            padding: 5px 10px;
+            margin: 10px 0 5px 0;
+            font-size: 14px;
+            border-left: 3px solid var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+            font-size: 14px;
+            outline: none;
+        }
+
+        #search-input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        #search-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #search-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            font-size: 12px;
+            color: #6c757d;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .highlight {
+            background-color: rgba(255, 230, 0, 0.3);
+            padding: 2px 0;
+        }
+
+        /* Nested content styling */
+        .nested-content {
+            margin-left: 30px;
+        }
+
+        .nested-item {
+            position: relative;
+            padding: 6px 10px 6px 20px;
+            font-size: 14px;
+        }
+
+        .nested-item::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 14px;
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        /* Media query per schermi piccoli */
+        @media screen and (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            header h1 {
+                font-size: 20px;
+            }
+
+            #list-container {
+                padding: 15px;
+            }
+
+            .category-header {
+                padding: 12px;
+            }
+
+            .category-title {
+                font-size: 14px;
+            }
+
+            .category-number {
+                width: 25px;
+                height: 25px;
+                font-size: 12px;
+                margin-right: 10px;
+            }
+
+            .content-item {
+                padding: 6px 10px 6px 32px;
+                font-size: 13px;
+            }
+
+            .content-item::before {
+                left: 14px;
+            }
+
+            .content-subheader {
+                font-size: 13px;
+            }
+
+            .nested-content {
+                margin-left: 20px;
+            }
+
+            .nested-item {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Elenco Normative Taxi</h1>
+        <p>Promemoria delle principali norme per il servizio taxi</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Cerca nelle normative...">
+        <button id="search-button">Cerca</button>
+    </div>
+
+    <div id="list-container">
+        <!-- 1. CASI IN CUI SI PUO RIFIUTARE UNA CORSA -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">1</div>
+                <div class="category-title">CASI IN CUI SI PUO RIFIUTARE UNA CORSA - N.4 (art.26)</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">1.1. Cliente in stato di ebbrezza oppure sotto effetto di stupefacenti</div>
+                <div class="content-item">1.2. Per giustificati motivi di sicurezza</div>
+                <div class="content-item">1.3. Persone con animali (eccetto cani per disabili)</div>
+                <div class="content-item">1.4. Bambini non accompagnati</div>
+            </div>
+        </div>
+
+        <!-- 2. MODI PER ACQUISIRE UNA CORSA -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">2</div>
+                <div class="category-title">MODI PER ACQUISIRE UNA CORSA - N.5 (art.26)</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">2.1. Numero unico 02-7777</div>
+                <div class="content-item">2.2. Radio taxi</div>
+                <div class="content-item">2.3. Posteggio taxi</div>
+                <div class="content-item">2.4. Per strada se nelle immediate vicinanze non sia presente un posteggio taxi</div>
+                <div class="content-item">2.5. Per strada, in prossimità di un posteggio taxi se non sono presenti taxi o utenti in attesa nel posteggio taxi</div>
+            </div>
+        </div>
+
+        <!-- 3. QUANDO UN TAXI E' FUORI SERVIZIO -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">3</div>
+                <div class="category-title">QUANDO UN TAXI E' FUORI SERVIZIO - N.3 (art.27)</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">3.1. Non è in turno</div>
+                <div class="content-item">3.2. Autovettura o tassametro guasti</div>
+                <div class="content-item">3.3. Malore del conducente</div>
+                <div class="content-item">3.4. Vengono ritirati, durante il turno, i documenti</div>
+            </div>
+        </div>
+
+        <!-- 4. DOVERI DEL CONDUCENTE -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">4</div>
+                <div class="category-title">DOVERI DEL CONDUCENTE - N.4 (art.29)</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">4.1. Vestire decorosamente</div>
+                <div class="content-item">4.2. Tenere un comportamento corretto</div>
+                <div class="content-item">4.3. Avere a bordo una mappa aggiornata delle vie</div>
+                <div class="content-item">4.4. Osservare regolamenti e il codice della strada</div>
+            </div>
+        </div>
+
+        <!-- 5. ATTI VIETATI AL CONDUCENTE -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">5</div>
+                <div class="category-title">ATTI VIETATI AL CONDUCENTE - N.5 (art.30)</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">5.1. Ammettere sul veicolo persone estranee, se non con il consenso del cliente</div>
+                <div class="content-item">5.2. Tenere a bordo animali/cose/persone che non siano inerenti con il servizio</div>
+                <div class="content-item">5.3. Interrompere la corsa, se non per cause di forza maggiore</div>
+                <div class="content-item">5.4. Pretendere compensi oltre all'importo indicato dal tassametro + gli eventuali supplementi</div>
+                <div class="content-item">5.5. Adibire l'autovettura alla vendita di merce anche a scopo di beneficenza</div>
+            </div>
+        </div>
+
+        <!-- 6. OBBLIGHI DEL CONDUCENTE -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">6</div>
+                <div class="category-title">OBBLIGHI DEL CONDUCENTE</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-subheader">6.1. INIZIO CORSA - N.3 (art.32)</div>
+                <div class="content-item">6.1.1. Aiutare il cliente a salire e caricare bagagli</div>
+                <div class="content-item">6.1.2. Accertarsi della destinazione</div>
+                <div class="content-item">6.1.3. Avviare il tassametro</div>
+                
+                <div class="content-subheader">6.2. DURANTE LA CORSA - N.3 (art.33)</div>
+                <div class="content-item">6.2.1. Accertarsi che il tassametro funzioni correttamente</div>
+                <div class="content-item">6.2.2. Compiere il percorso + breve oppure quello indicato dall'utente</div>
+                <div class="content-item">6.2.3. Ultimare la corsa anche se nel frattempo il turno è terminato</div>
+                
+                <div class="content-subheader">6.3. TERMINE CORSA - N.4 (art.34)</div>
+                <div class="content-item">6.3.1. Mettere il tassametro in cassa e far prendere visione all'utente dell'importo</div>
+                <div class="content-item">6.3.2. Aiutare il cliente a scendere</div>
+                <div class="content-item">6.3.3. Accertarsi che l'utente non abbia dimenticato nulla a bordo dell'autovettura</div>
+                <div class="content-item">6.3.4. Azzerare il tassametro e riprendere servizio</div>
+            </div>
+        </div>
+
+        <!-- 7. ATTI VIETATI ALL'UTENTE -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">7</div>
+                <div class="category-title">ATTI VIETATI ALL'UTENTE - N.8 (art.36)</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">7.1. Salire o scendere dal veicolo in movimento</div>
+                <div class="content-item">7.2. Aprire la portiera dal lato di scorrimento</div>
+                <div class="content-item">7.3. Portare a bordo oggetti/sostanze pericolose</div>
+                <div class="content-item">7.4. Insudiciare/danneggiare l'autovettura</div>
+                <div class="content-item">7.5. Vendere merce anche se a scopo di beneficenza</div>
+                <div class="content-item">7.6. Fare schiamazzi/rumori molesti</div>
+                <div class="content-item">7.7. Distrarre/disturbare il conducente</div>
+                <div class="content-item">7.8. Fumare sull'autovettura</div>
+            </div>
+        </div>
+
+        <!-- 8. IMPORTO DELLA CORSA DIVERSO DA QUELLO DEL TASSAMETRO -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">8</div>
+                <div class="category-title">IMPORTO DELLA CORSA DIVERSO DA QUELLO DEL TASSAMETRO - N.3</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">8.1. Aggiunta di pedaggi autostradali</div>
+                <div class="content-item">8.2. Tariffa fissa/predeterminata</div>
+                <div class="content-item">8.3. Applicazione di importo minimo per corse in partenza dagli aeroporti</div>
+            </div>
+        </div>
+
+        <!-- 9. FACOLTA' DI SCELTA AUTOVETTURA DA PARTE DEGLI UTENTI -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">9</div>
+                <div class="category-title">FACOLTA' DI SCELTA AUTOVETTURA DA PARTE DEGLI UTENTI - N.4</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">9.1. Numero utenti maggiore rispetto ai posti offerti</div>
+                <div class="content-item">9.2. Volume del bagagliaio maggiore della capienza del bagagliaio dell'autovettura</div>
+                <div class="content-item">9.3. Richiesta di pagamento elettronico se non disponibile sull'autovettura</div>
+                <div class="content-item">9.4. Trasporto animali non disponibile</div>
+            </div>
+        </div>
+
+        <!-- 10. TARIFFE PREDETERMINATE -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">10</div>
+                <div class="category-title">TARIFFE PREDETERMINATE</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">10.1. Tariffa fissa su percorso fisso</div>
+                <div class="content-item">10.2. Tutto compreso anche supplementi</div>
+                <div class="content-item">10.3. Tassista sceglie il percorso, se cliente devia o chiede sosta si va a tassametro</div>
+            </div>
+        </div>
+
+        <!-- 11. TARIFFARIO -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">11</div>
+                <div class="category-title">TARIFFARIO</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">11.1. Tariffa multipla (a tempo e distanza urbana – distanza extraurbana) e progressiva</div>
+                <div class="content-item">11.2. Uso convenzionale e uso collettivo</div>
+                <div class="content-item">11.3. T1 T2 T3</div>
+                <div class="content-item">11.4. Notturno dalle 21 alle 6, festivo e feriale (non cumulabili)</div>
+            </div>
+        </div>
+
+        <!-- 12. TARIFFA COLLETTIVA -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">12</div>
+                <div class="category-title">TARIFFA COLLETTIVA</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">12.1. Proposta dai clienti</div>
+                <div class="content-item">12.2. Minimo 3</div>
+                <div class="content-item">12.3. Dalla stessa partenza e con le destinazioni sulla medesima direzione</div>
+                <div class="content-item">12.4. Tariffa apposita su tassametro con tasto dedicato del valore della tariffa convenzionale/3+20%</div>
+            </div>
+        </div>
+
+        <!-- 13. COLLABORAZIONE FAMILIARE -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">13</div>
+                <div class="category-title">COLLABORAZIONE FAMILIARE</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">13.1. Massimo 2, coniuge o parenti fino al terzo grado o affini fino al secondo grado</div>
+                <div class="content-item">13.2. È facoltà del tassista</div>
+                <div class="content-item">13.3. Si condivide il turno del titolare</div>
+            </div>
+        </div>
+
+        <!-- 14. SECONDA GUIDA -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">14</div>
+                <div class="category-title">SECONDA GUIDA</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">14.1. Disposte dal comune</div>
+                <div class="content-item">14.2. Turni separati e non interscambiabili da massimo 16 ore totali</div>
+                <div class="content-item">14.3. Contratto di gestione o P.IVA</div>
+            </div>
+        </div>
+
+        <!-- 15. BACINO AEROPORTUALE -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">15</div>
+                <div class="category-title">BACINO AEROPORTUALE</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">15.1. Il territorio delle provincie di Milano, Varese, Bergamo sul quale ricadono gli aeroporti civili di Linate, Malpensa, Orio al Serio</div>
+            </div>
+        </div>
+
+        <!-- 16. COMUNI CONURBATI -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">16</div>
+                <div class="category-title">COMUNI CONURBATI</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">16.1. N.46</div>
+                <div class="content-item">16.2. Reciprocità di carico e stesse tariffe</div>
+            </div>
+        </div>
+
+        <!-- 17. OBBLIGO DI CORSA -->
+        <div class="category">
+            <div class="category-header" onclick="toggleCategory(this)">
+                <div class="category-number">17</div>
+                <div class="category-title">OBBLIGO DI CORSA</div>
+                <div class="toggle-arrow"></div>
+            </div>
+            <div class="category-content">
+                <div class="content-item">17.1. Tutte i comuni delle provincie conurbate (n.3) se partenza dai 46 comuni del bacino</div>
+                <div class="content-item">17.2. Tutta la regione e province confinanti (n.13) se partenza da aeroporti</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Promemoria Normative Taxi © 2025 - Tutti i riferimenti normativi vanno verificati con i testi di legge ufficiali.
+    </footer>
+
+    <script>
+        // Funzione per aprire/chiudere le categorie
+        function toggleCategory(header) {
+            const category = header.parentElement;
+            if (category.classList.contains('collapsed')) {
+                category.classList.remove('collapsed');
+            } else {
+                category.classList.add('collapsed');
+            }
+        }
+
+        // All'avvio, collassa tutte le categorie
+        document.addEventListener('DOMContentLoaded', function() {
+            const categories = document.querySelectorAll('.category');
+            categories.forEach(category => {
+                category.classList.add('collapsed');
+            });
+        });
+
+        // Funzionalità di ricerca
+        document.getElementById('search-button').addEventListener('click', performSearch);
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!searchTerm) {
+                // Se la ricerca è vuota, resetta tutto
+                resetSearch();
+                return;
+            }
+
+            // Rimuove evidenziazioni precedenti
+            document.querySelectorAll('.highlight').forEach(el => {
+                el.outerHTML = el.innerHTML;
+            });
+
+            // Per ogni categoria
+            const categories = document.querySelectorAll('.category');
+            let matchFound = false;
+
+            categories.forEach(category => {
+                const categoryContent = category.querySelector('.category-content');
+                const categoryHeader = category.querySelector('.category-title');
+                let categoryMatch = false;
+
+                // Controlla nel titolo della categoria
+                if (categoryHeader.innerText.toLowerCase().includes(searchTerm)) {
+                    categoryHeader.innerHTML = highlightText(categoryHeader.innerText, searchTerm);
+                    categoryMatch = true;
+                }
+
+                // Controlla negli elementi di contenuto
+                const contentItems = categoryContent.querySelectorAll('.content-item, .content-subheader');
+                contentItems.forEach(item => {
+                    if (item.innerText.toLowerCase().includes(searchTerm)) {
+                        item.innerHTML = highlightText(item.innerText, searchTerm);
+                        categoryMatch = true;
+                    }
+                });
+
+                // Mostra o nasconde la categoria in base ai risultati
+                if (categoryMatch) {
+                    category.classList.remove('collapsed');
+                    category.style.display = 'block';
+                    matchFound = true;
+                } else {
+                    category.style.display = 'none';
+                }
+            });
+
+            // Mostra un messaggio se non ci sono risultati
+            const noResultsMsg = document.getElementById('no-results-message');
+            if (!matchFound) {
+                if (!noResultsMsg) {
+                    const msg = document.createElement('div');
+                    msg.id = 'no-results-message';
+                    msg.style.textAlign = 'center';
+                    msg.style.padding = '20px';
+                    msg.style.color = '#666';
+                    msg.innerHTML = 'Nessun risultato trovato per "<strong>' + searchTerm + '</strong>"';
+                    document.getElementById('list-container').appendChild(msg);
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+
+        function resetSearch() {
+            // Rimuove evidenziazioni
+            document.querySelectorAll('.highlight').forEach(el => {
+                el.outerHTML = el.innerHTML;
+            });
+
+            // Resetta la visualizzazione delle categorie
+            const categories = document.querySelectorAll('.category');
+            categories.forEach(category => {
+                category.style.display = 'block';
+                category.classList.add('collapsed');
+            });
+
+            // Rimuove messaggi di "nessun risultato"
+            const noResultsMsg = document.getElementById('no-results-message');
+            if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+
+        function highlightText(text, searchTerm) {
+            const regex = new RegExp(searchTerm, 'gi');
+            return text.replace(regex, match => `<span class="highlight">${match}</span>`);
+        }
+    </script>
+</body>
+</html>
