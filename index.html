@@ -54,20 +54,45 @@
 <body>
   <div id="root"></div>
   
-  <!-- Script principale dell'app -->
-  <script type="text/babel" data-type="module">
-    function App() {
-      // Categorie di partenza
-      var categorie = [
-        'Aeroporti',
-        'Ospedali',
-        'Piazze',
-        'Cerchie',
-        'Stazioni',
-        'Autostrade',
-		'Varie',
-        'Duomo'
-      ];
+ <script type="text/babel" data-type="module">
+  function App() {
+    // Le categorie della tua app
+    var categorie = [
+      'Aeroporti',
+      'Ospedali',
+      'Piazze',
+      'Cerchie',
+      'Varie',
+      'Stazioni',
+      'Autostrade',
+      'Duomo'
+    ];
+
+    // Qui c'è il contenuto che verrà mostrato sulla pagina
+    return (
+      <div className="p-4">
+        {/* Il link in alto */}
+        <a href="orale.html" target="_blank" className="text-blue-600 underline block mb-4">
+          📄 Regolamento e Normative
+        </a>
+
+        {/* Titolo */}
+        <h1 className="text-2xl font-bold mb-4">Scegli una categoria:</h1>
+
+        {/* Elenco delle categorie */}
+        <ul className="list-disc pl-5">
+          {categorie.map((cat, i) => (
+            <li key={i}>{cat}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  // Questo dice a React dove disegnare l'app
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
     
       // Stato per memorizzare i percorsi
       var [percorsiDB, setPrecorsiDB] = React.useState({});
