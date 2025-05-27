@@ -5091,7 +5091,7 @@
     },
     {
       "id": 156,
-      "nome": "Medaglie d'Oro- Pta Garibaldi",
+      "nome": "Medaglie d'Oro - Pta Garibaldi",
       "vie": [
         "Viale Montenero",
         "Piazza 5 Giornate",
@@ -5123,7 +5123,8 @@
         "Piazza Principessa Clotilde",
         "Sx Montegrappa",
         "Dx Rosales"
-      ]
+      ],
+      "immagine": "Piazze/Medaglie d'Oro - Pta Garibaldi.jpg"
     },
     {
       "id": 157,
@@ -7225,7 +7226,7 @@
     },
     {
       "id": 234,
-      "nome": "Lambrate x P.za Affari",
+      "nome": "Lambrate - P.za Affari",
       "vie": [
         "Via Valvassoni Peroni",
         "Dx Via Bassini",
